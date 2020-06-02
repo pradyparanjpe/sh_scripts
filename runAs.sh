@@ -31,7 +31,7 @@ function contextInterpretUser {
 }
 
 # Interpret user and ip from options
-while getopts "u:i:" opt; do
+while getopts "u:i:c:" opt; do
     case ${opt} in
         u )
             otherUser="${OPTARG}";
@@ -39,21 +39,19 @@ while getopts "u:i:" opt; do
         i )
             otherIP="${OPTARG}";
             ;;
+        c )
+            execCmd="${OPTARG}";
     esac;
 done;
 
-shift $((OPTIND -1));
+shift "$((OPTIND -1))";
 
 # Check if positional first argument is supplied
-if [[ -z $otherUser ]]; then
-    otherUser="$(echo "$1" | cut -d "@" -f 1)";
-fi
+[[ -z $otherUser ]] && otherUser="$(echo "$1" | cut -d "@" -f 1)";
 
 if [[ -z $otherIP ]]; then
     otherIP="$(echo "$1" | cut -d "@" -f 2)";
-    if [[ "$otherIP" == "$otherUser" ]]; then
-        otherIP="";
-    fi
+    [[ "$otherIP" == "$otherUser" ]] && otherIP="";
     if [[ $otherUser == *.*.*.* || $otherUser == "localhost" ]]; then
         otherIP="$otherUser";
         otherUser="";
@@ -65,7 +63,7 @@ if [[ -z $otherIP ]]; then
     # Check if second positional argument is supplied
     otherIP=$1;
     if [[ "$otherIP" == "$otherUser" ]]; then
-        otherIP="";
+        otherIP=$(zenity --title="Run at remote" --text="IP Address:" --entry);
     fi
 fi
 
@@ -105,12 +103,17 @@ if [[ $? != 0 ]]; then
 fi;
 
 
-execCmd=$(zenity --title="$titlestr" --text="Application to open" --entry);
+if [[ -z $execCmd ]]; then
+    execCmd=$2;
+fi
 
+if [[ -z $execCmd ]]; then
+    execCmd=$(zenity --title="$titlestr" --text="Application to open" --entry);
+fi
 if [[ -z $execCmd ]]; then
 	exit 0;
 else
-	ssh -X $otherUser@127.0.0.1 "nohup $execCmd 2>&1 1>/dev/null &" 2>&1 1>/dev/null;
+	ssh -X $otherUser@$otherIP "nohup $execCmd 2>&1 1>/dev/null &" 2>&1 1>/dev/null;
 	err=$?;
 	if [[ $err == 0 ]]; then
 		echo "exitted with error $err";
