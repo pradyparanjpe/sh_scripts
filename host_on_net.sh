@@ -20,4 +20,4 @@
 # Files in this project contain regular utilities and aliases for linux (Fc31)
 
 # Bind port 80 to net
-ssh -R $username:80:localhost:80 serveo.net 2>&1 >> ${HOME}/.server.log
+nohup ssh -R $username:80:localhost:19999 -R $username:80:localhost:80 serveo.net 2>&1 >> ${HOME}/.server.log &
