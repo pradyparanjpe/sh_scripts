@@ -43,7 +43,7 @@ else
 	gsettings set org.gnome.system.proxy.https port 8080;
 	gsettings set org.gnome.system.proxy.http use-authentication true;
 	gsettings set org.gnome.system.proxy.http authentication-user "$username";
-	gsettings set org.gnome.system.proxy.http authentication-password "passwordpt";
+	gsettings set org.gnome.system.proxy.http authentication-password "$passwordpt";
 ##	zenity --info --text='Proxy Enabled' --title='Proxy toggle';
 	echo "Proxy Enabled";
     notify-send "Proxy Enabled";
