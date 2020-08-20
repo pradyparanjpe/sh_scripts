@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
 # -*- coding:utf-8; mode:shell-script -*-
 
-systemd-analyse plot > "${HOME}/Org/${uname -n}_startup.svg"
+org_dir="${HOME}/Org"
+mkdir -p "${org_dir}"
+systemd-analyze plot > "${org_dir}/$(uname -n)_startup.svg"
