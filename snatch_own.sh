@@ -23,8 +23,14 @@
 
 # This must be run strictly as root
 
-[[ "$UID" -eq 0 ]] || exec sudo su -c "bash $0 $@"
 
+
+# Variables
+
+ROBBER="$(logname)"
+SYNDICATE=
+RECURSE=false
+VERBOSE=false
 USAGE_MESSAGE="$0
 Snatch Ownership of Files
 
@@ -35,7 +41,8 @@ Optional Arguments
 -h|--help\t\tPrint this message and exit
 -R\t\t\tApply recursive
 -v\t\t\tVerbose outout
--u|--user ROBBER\tGive ownership to ROBBER
+-u|--user ROBBER\tGive ownership to ROBBER [default: ${ROBBER}]
+-g|--group SYNDICATE\tGroup ownership [default: ROBBER's default]
 
 Positional Argument
 
@@ -43,12 +50,6 @@ TARGET
 "
 
 [[ $# -eq 0 ]] && echo -e "$USAGE_MESSAGE" && exit 0
-
-# Variables
-
-ROBBER="$(logname)"
-RECURSE=false
-VERBOSE=false
 
 while test $# -ge 1; do
     case $1 in
@@ -72,6 +73,12 @@ while test $# -ge 1; do
             ${VERBOSE} && echo "[VERBOSE] SET ROBBER $ROBBER"
             shift 1
             ;;
+        -g|--group)
+            shift 1
+            SYNDICATE="$1"
+            ${VERBOSE} && echo "[VERBOSE] SET SYNDICATE $SYNDICATE"
+            shift 1
+            ;;
         *)
             TARGET="${TARGET}${1}"
             shift 1
@@ -82,19 +89,29 @@ done
 [[ -z "${TARGET}" ]] && echo -e "${USAGE_MESSAGE}" && exit 0
 
 [[ ! -e "${TARGET}" ]] \
-    && echo -e "  [ERROR] Confirm that ${TARGET} exists." \
+    && echo -e "  [ERROR] Confirm that ${TARGET} exists." >&2 \
     && exit 2
 
-CLI="chown ${ROBBER}"
+if ! id -u "${ROBBER}" >> /dev/null; then
+    echo -e "[ERROR]   Confirm that the ${ROBBER} exists" >&2
+    exit 1
+fi
+
+[[ -z $SYNDICATE ]] && SYNDICATE="$(groups ${ROBBER} | cut -d ":" -f 2 \
+| cut -d " " -f 2)"
+
+
+CLI="chown ${ROBBER}:${SYNDICATE}"
 ${RECURSE} && CLI="${CLI} -R"
 ${VERBOSE} \
     && CLI="${CLI} -v"\
-    && echo "[VERBOSE] Snatching ownership of ${TARGET} to ${ROBBER}"\
+    && echo "[VERBOSE] Snatching ownership of ${TARGET} to\
+ ${ROBBER}:${SYNDICATE}"\
     && echo -e "executing\n$CLI $TARGET"
-${CLI} ${TARGET}
-
+sudo su -c "${CLI} ${TARGET}"
 
 ROBBER=
 VERBOSE=
 RECURSE=
+SYNDICATE=
 CLI=
