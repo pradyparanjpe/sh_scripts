@@ -21,8 +21,9 @@
 
 # Clear Cache
 
-[[ `whoami` != "root" ]] && echo "Run with Root Privileges" && exit 1
-read -p "Clear Buffers? [yes/no]: " yn
+# This must be run strictly as root
+[[ "$UID" -eq 0 ]] || exec sudo su -c "bash $0 $@"
+@read -p "Clear Buffers? [yes/no]: " yn
 case $yn in
     [Yy]*) echo "Preparing ...";
         echo -e "\nFree\tBuffer\tCache\033[0;31m";
