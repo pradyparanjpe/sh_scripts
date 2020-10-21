@@ -27,11 +27,10 @@ function set_var() {
     object=
     obj_name=
     pos=( )
-    reverse=false
     mk_par=false
     mv_cmd="mv"
     ln_cmd="ln -s"
-    usage="usage: $0 [-h|--help] [-p|--path] [-r|--reverse]
+    usage="usage: $0 [-h|--help] [-p|--path]
 
 $0 SOURCE OBJECT DESTIN
 $0 OBJECT DESTIN
@@ -42,7 +41,7 @@ move object from SOURCE to DESTIN and leave a soft link at SOURCE
 
 Required Positional Argument:
 
-OBJECT\t\tname of object to move and link (file|directory|...)
+OBJECT\t\tname of object to move and link {<file>|<directory>|...}
 
 
 Optional Positional Argument:
@@ -55,7 +54,6 @@ Optional Arguments:
 
 -h|--help\tprint this message and exit
 -p|--path\tmake directory paths if they don't exist
--r|--reverse\tmove object from DESTIN to SOURCE and leave a link at DESTIN
 -v|--verbose\tprint verbose
 "
 }
@@ -68,7 +66,6 @@ function rem_var() {
     object=
     obj_name=
     pos=
-    reverse=
     mk_par=
     mv_cmd=
     ln_cmd=
@@ -80,10 +77,6 @@ function cli() {
     [[ $# -eq 0 ]] && echo -e "${usage}" && exit 0
     while test $# -gt 0; do
         case $1 in
-            -r|--reverse)
-                reverse=true
-                shift
-                ;;
             -v|--verbose)
                 verbose=true
                 shift
@@ -132,21 +125,16 @@ function auto_complete() {
     if [[ "${object}" != /* ]]; then
         object="${PWD}/${object}"
     fi
+    if [[ "${object}" == */ ]]; then
+        object="${object%/}"
+    fi
     if [[ -z "${source}" ]]; then
-        source="$(dirname $object)"
+        source="$(dirname ${object})"
     elif [[ "${source}" != /* ]]; then
         source="${PWD}/${source}"
     fi
     if [[ "${destin}" != /* ]]; then
         destin="${PWD}/${destin}"
-    fi
-
-    if $reverse; then
-        echo "reverse directions"
-        temp=$destin
-        destin=$source
-        source=$temp
-        temp=
     fi
 
     if $mk_par; then
@@ -193,11 +181,11 @@ function commands() {
 
 function main() {
     set_var
-    cli $@
+    cli "$@"
     auto_complete
     sanity
     commands
     rem_var
 }
 
-main $@
+main "$@"
