@@ -65,7 +65,7 @@ function rem_var() {
     destin=
     object=
     obj_name=
-    pos=
+    pos=()
     mk_par=
     mv_cmd=
     ln_cmd=
@@ -129,7 +129,7 @@ function auto_complete() {
         object="${object%/}"
     fi
     if [[ -z "${source}" ]]; then
-        source="$(dirname ${object})"
+        source="$(dirname "${object}")"
     elif [[ "${source}" != /* ]]; then
         source="${PWD}/${source}"
     fi
