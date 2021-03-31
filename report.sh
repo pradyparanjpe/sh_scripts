@@ -32,7 +32,8 @@
 [[ -z "${INFILE}" ]] && INFILE="${EXPENDLOG}";
 resolution=$(xrandr | sed -n /\*/p | awk '{print $1}');
 
-(cat <<EOF; ledger -f "${INFILE}" -J "$@") | gnuplot -persist -geometry ${resolution}
+(cat <<EOF; ledger -f "${INFILE}" -J "$@") \
+    | gnuplot -persist -geometry "${resolution}"
   set terminal ${LEDGER_TERM};
   set yrange [ 0 :  ];
   set xdata time;

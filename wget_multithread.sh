@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 # -*- coding:utf-8 -*-
 #
 # Copyright 2020 Pradyumna Paranjape
@@ -20,51 +20,78 @@
 # Files in this project contain regular utilities and aliases for linux (Fc31)
 
 # wget multiple threads
-while getopts ":ht:l:" optname; do
+
+set_vars() {
+    threads=1
+    logfilename=/dev/stdout
+    usage="Usage: wget_multithreaded.sh [-h] [-t] ..."
+    help_msg="
+Optional Arguments:
+-t N\t\tinitiate N threads [default: ${threads}]
+-l STRING\tSave log in STRING.wget_log [defailt: ${logfilename}]
+
+All trailing arguments are passed on to wget
+"
+}
+
+unset_vars() {
+    unset usage
+    unset help_msg
+}
+
+clean_exit() {
+    unset_vars
+    if [ -z "$1" ]; then
+        exit 0;
+    else
+        exit "$1"
+    fi
+}
+
+
+cli () {
+    while getopts ":ht:l:" optname; do
         case $optname in
-                "h")
-                        echo -e "Usage: wget_multithreaded.sh [arguments] ...\n"
-                        echo -e "Arguments:"
-                        echo -e "  -t N \t\t\tinitiate N threads";
-                        echo -e "  -l STRING \t\tSave log in STRING.wget_log\n";
-                        echo -e "All trailing arguments are passed on to wget";
-                        exit 0;
-                        ;;
-                "t")
-                        count=$OPTARG
-                        ;;
-                "l")
-                        logfilename=$OPTARG
-                        ;;
-                "?")
-                        echo "Illegal option \"$OPTARG\""
-                        exit 1
-                        ;;
-                ":")
-                        echo "No Threads specified, using 1 thread"
-                        count=1
-                        ;;
-                *)
-                        "Error while Processing options";
-                        ;;
+            "h"|"help")
+                printf "%s\n" "${usage}"
+                # shellcheck disable=SC2059
+                printf "${help_msg}"
+                clean_exit
+                ;;
+            "t")
+                threads=$OPTARG
+                ;;
+            "l")
+                logfilename="${OPTARG}.wget_log"
+                ;;
+            "?")
+                echo "Illegal option \"$OPTARG\""
+                clean_exit 1
+                ;;
+            ":")
+                echo "No Threads specified, using 1 thread"
+                threads=1
+                ;;
+            *)
+                "Error while Processing options";
+                ;;
         esac
-done
+    done
+    shift $((OPTIND - 1));
+}
 
-shift $((OPTIND - 1));
+call() {
+    for _ in $(seq 0 "${threads}"); do
+        wget -r -np -N "$@" >>"$logfilename" 2>&1 &
+    done;
+    unset _
+}
 
-if [[ -z $count ]]; then 
-        echo "No thread count specified, using 1";
-        count=1;
-fi
+main () {
+    set_vars
+    cli "$@"
+    call "$@"
+}
 
-if [[ -z $logfilename ]]; then
-        logfilename=/dev/stdout;
-else
-        logfilename="$logfilename.wget_log"
-fi
-
-for (( i=0; i<$count; i++ )); do
-        wget -r -np -N $@ &>>$logfilename &
-done;
-
-exit;
+main "$@"
+clean_exit

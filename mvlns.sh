@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 # -*- coding:utf-8 -*-
 #
 # Copyright 2020 Pradyumna Paranjape
@@ -20,172 +20,193 @@
 # Files in this project contain regular utilities and aliases for linux (Fc31)
 
 
-function set_var() {
-    verbose=
-    source=
-    destin="${PWD}"
+set_vars() {
+    verbose=false
+    O_IFS="$IFS"
+    srcdir=
     object=
-    obj_name=
-    pos=( )
+    destin="${PWD}"
     mk_par=false
-    mv_cmd="mv"
-    ln_cmd="ln -s"
-    usage="usage: $0 [-h|--help] [-p|--path]
+    usage="usage: $0 [-h|--help] [-p|--parents] [-v|--verbose] OBJECT
 
-$0 SOURCE OBJECT DESTIN
-$0 OBJECT DESTIN
-$0 OBJECT
-
-move object from SOURCE to DESTIN and leave a soft link at SOURCE
-
-
-Required Positional Argument:
-
-OBJECT\t\tname of object to move and link {<file>|<directory>|...}
-
-
-Optional Positional Argument:
-
-DESTIN\t\tfuture parent path of object [default: ${destin}]
-SOURCE\t\tcurrent parent path (linked in future) [default: guessed from OBJECT]
+    or: $0 <optional arguments> SOURCE OBJECT DESTIN
+    or: $0 <optional arguments> DESTIN
+"
+    help_msg="
+Move object from SOURCE to DESTIN and leave a soft link at SOURCE
 
 
 Optional Arguments:
 
 -h|--help\tprint this message and exit
--p|--path\tmake directory paths if they don't exist
+-p|--parents\tmake parent paths if they don't exist
 -v|--verbose\tprint verbose
+
+
+Optional Positional Argument:
+
+DESTIN\t\tfuture parent path of object [default: ${destin}]
+SOURCE\t\tfuture link parent [default: guessed from OBJECT]
+
+
+Required Positional Argument:
+
+OBJECT\t\tname of object to move and link {<file>|<directory>|...}
 "
 }
 
 
-function rem_var() {
-    verbose=
-    source=
-    destin=
-    object=
-    obj_name=
-    pos=()
-    mk_par=
-    mv_cmd=
-    ln_cmd=
-    usage=
+unset_vars() {
+    IFS="$O_IFS"
+    unset verbose
+    unset O_IFS
+    unset srcdir
+    unset object
+    unset destin
+    unset mk_par
+    unset usage
+    unset help_msg
 }
 
 
-function cli() {
-    [[ $# -eq 0 ]] && echo -e "${usage}" && exit 0
+clean_exit() {
+    unset_vars
+    if [ -z "$1"]; then
+        exit 0;
+    else
+        exit "$1"
+    fi
+}
+
+cli() {
+    [ $# -eq 0 ] && printf "%s\n" "${usage}" && clean_exit 0
+    pos=
     while test $# -gt 0; do
         case $1 in
             -v|--verbose)
                 verbose=true
                 shift
                 ;;
-            -p|--path)
+            -p|--parents)
                 mk_par=true
                 shift
                 ;;
             -h|--help)
-                echo -e "${usage}"
-                exit 0
+                printf "%s\n" "${usage}"
+                # shellcheck disable=2059
+                printf "${help_msg}\n"
+                unset pos
+                clean_exit 0
                 ;;
             *)
-                pos+=( "$1" )
+                if [ -z "${pos}" ]; then
+                    pos="${1}"
+                else
+                    pos="${pos} ${1}"
+                fi
                 shift
                 ;;
         esac
     done
-    case ${#pos[*]} in
+    if [ -z "${pos}" ]; then
+        printf "No positional arguments found.\n\n"
+        printf "%s\n\n" "${usage}"
+        unset pos
+        clean_exit 1
+    fi
+    # shellcheck disable=SC2086 # setting $* to $pos
+    set -- $pos
+    case $# in
         1)
-            object=${pos[0]}
+            object="${pos}"
             ;;
         2)
-            object=${pos[0]}
-            destin=${pos[1]}
+            IFS=" " read -r object destin << EOF
+${pos}
+EOF
+            IFS="$O_IFS"
             ;;
         3)
-            source=${pos[0]}
-            object=${pos[1]}
-            destin=${pos[2]}
+            IFS=" " read -r source object destin << EOF
+${pos}
+EOF
+            IFS="$O_IFS"
             ;;
         *)
             echo "bad usage"
             echo "source: $source"
             echo "object: $object"
             echo "destin: $destin"
-            echo -e "$usage"
-            exit 1
+            printf "%s" "$usage"
+            unset pos
+            clean_exit 1
             ;;
     esac
+    unset pos
 }
 
 
-function auto_complete() {
+auto_complete() {
     # are paths rooted?
-    if [[ "${object}" != /* ]]; then
-        object="${PWD}/${object}"
+    object="$(realpath "${object}")"
+    if [ -z "${srcdir}" ]; then
+        srcdir="$(dirname "${object}")"
     fi
-    if [[ "${object}" == */ ]]; then
-        object="${object%/}"
-    fi
-    if [[ -z "${source}" ]]; then
-        source="$(dirname "${object}")"
-    elif [[ "${source}" != /* ]]; then
-        source="${PWD}/${source}"
-    fi
-    if [[ "${destin}" != /* ]]; then
-        destin="${PWD}/${destin}"
-    fi
+    srcdir="$(realpath "${srcdir}")"
+    destin="$(realpath "${destin}")"
 
     if $mk_par; then
-        mkdir -p "${source}" || exit $?
-        mkdir -p "${destin}" || exit $?
+        mkdir -p "${srcdir}" || clean_exit $?
+        mkdir -p "${destin}" || clean_exit $?
     fi
 }
 
 
-function sanity() {
-    if [[ "${source}" == "${destin}" ]]; then
-        echo -e "source and distination are both ${source}"
-        echo -e "nothing to be done"
-        exit 0
+sanity() {
+    if [ "${srcdir}" = "${destin}" ]; then
+        printf "source and distination are both %s\n" "${srcdir}"
+        printf "nothing to be done\n"
+        clean_exit 0
     fi
-    if [[ ! -d "${source}" ]]; then
-        echo "Directory '${source}' doesn't exist. try -p option" >&2
-        exit 2
+    if [ ! -d "${srcdir}" ]; then
+        printf "Directory '%s' doesn't exist. try -p option\n" "${srcdir}" >&2
+        clean_exit 127
     fi
-    if [[ ! -d "${destin}" ]]; then
-        echo "Directory '${destin}' doesn't exist. try -p option" >&2
-        exit 2
+    if [ ! -d "${destin}" ]; then
+        printf "Directory '%s' doesn't exist. try -p option\n" "${destin}" >&2
+        clean_exit 127
     fi
-    if [[ ! -e "${object}" ]]; then
-        echo "${object} doesn't exist." >&2
-        exit 2
+    if [ ! -e "${object}" ]; then
+        printf "'%s' doesn't exist.\n" "${object}" >&2
+        clean_exit 127
     fi
 }
 
 
-function commands() {
+commands() {
+    obj_name="$(basename "${object}")"
     if $verbose; then
-        mv_cmd="${mv_cmd} -v"
+        printf "mv -v %s -t %s\n" "${object}" "${destin}"
+        printf "ln -s %s/%s %s/%s\n" "${destin}" \
+               "${obj_name}" "${srcdir}" "${obj_name}"
     fi
-    obj_name=$(echo "${object}" | rev |cut -d / -f 1 | rev)
     if $verbose; then
-        echo -e "${mv_cmd} ${object} ${destin}"
-        echo -e "${ln_cmd} ${destin}/${obj_name} ${source}/."
+        mv "${object}" -t "${destin}"  || clean_exit $?
+    else
+        mv -v "${object}" -t "${destin}" || clean_exit $?
     fi
-    ${mv_cmd} "${object}" "${destin}" \
-        && ${ln_cmd} "${destin}/${obj_name}" "${source}"
+    ln -s "${destin}/${obj_name}" "${srcdir}/${obj_name}"
+    unset obj_name
 }
 
 
-function main() {
-    set_var
+main() {
+    set_vars
     cli "$@"
     auto_complete
     sanity
     commands
-    rem_var
 }
 
 main "$@"
+clean_exit 0

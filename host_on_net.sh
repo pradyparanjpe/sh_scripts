@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 # -*- coding:utf-8 -*-
 #
 # Copyright 2020 Pradyumna Paranjape
@@ -20,9 +20,5 @@
 # Files in this project contain regular utilities and aliases for linux (Fc31)
 
 # Bind port 80 to net
-nohup\
-	ssh\
-	-R $username:19999:localhost:19999\
-	serveo.net 2>&1 >> ${HOME}/.server.log\
-	&
-
+nohup ssh -R "${username}":19999:localhost:19999 serveo.net \
+        > "${HOME}/.server.log" 2>&1 &

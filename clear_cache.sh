@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 # -*- coding:utf-8 -*-
 #
 # Copyright 2020 Pradyumna Paranjape
@@ -22,23 +22,74 @@
 # Clear Cache
 
 # This must be run strictly as root
-[[ "$UID" -eq 0 ]] || exec sudo su -c "bash $0 $@"
-read -p "Clear Buffers? [yes/no]: " yn
-case $yn in
-    [Yy]*) echo "Preparing ...";
-        echo -e "\nFree\tBuffer\tCache\033[0;31m";
-        vmstat -S M | sed -n 3p | sed -r 's/\W+/ /g' | cut -d " " -f 5,6,7 | sed -e "s/ /, /g";
-        old=(`vmstat -S M | sed -n 3p | sed -r 's/\W+/ /g' | cut -d " " -f 5,6,7`);
-        echo -e "\033[0;32m\nClearing Buffers ...\033[m";
-        sync; echo 3 > /proc/sys/vm/drop_caches;
-        echo -e "Buffers Cleared";
-        echo -e "\nFree\tBuffer\tCache\033[0;34m";
-        vmstat -S M | sed -n 3p | sed -r 's/\W+/ /g' | cut -d " " -f 5,6,7 | sed -e "s/ /, /g";
-        new=(`vmstat -S M | sed -n 3p | sed -r 's/\W+/ /g' | cut -d " " -f 5,6,7`);
-        echo -e "\n\033[0;33mCleared $((${old[1]}-${new[1]})) M buffers & $((${old[2]}-${new[2]})) M cache";
-        echo -e "\033[m";
-        ;;
-    *) echo "exitting";
-        exit
-        ;;
-esac;
+
+
+name_colors() {
+rok="\033[0;31;40m"  # red on black
+gok="\033[0;32;40m"  # green
+yok="\033[0;33;40m"  # yellow
+bok="\033[0;34;40m"  # blue
+dod="\033[m"         # default on default
+}
+
+
+vst() {
+    val="$(vmstat -S M | sed -n 3p | sed -r 's/\W+/ /g' | cut -d " " -f 5,6,7)"
+    printf "%s" "$val"
+    unset val
+}
+
+
+clean_up() {
+    unset oldf
+    unset old_b
+    unset old_c
+    unset newf
+    unset new_b
+    unset new_c
+    unset rok
+    unset gok
+    unset yok
+    unset bok
+    unset dod
+    unset yn
+}
+
+clear_buff() {
+    echo "Old:"
+    printf "Free\tBuffer\tCache\n"
+    IFS=" " read -r old_f old_b old_c << EOF
+$(vst)
+EOF
+    printf "${rok}%s\t%s\t%s\n\n" "${old_f}" "${old_b}" "${old_c}"
+    # shellcheck disable=SC2059
+    printf "${gok}Clearing Buffers${dod}\n"
+    sync; echo 3 > /proc/sys/vm/drop_caches
+    printf "Buffers Cleared\n\n"
+    echo "New:"
+    printf "Free\tBuffer\tCache\n"
+    IFS=" " read -r new_f new_b new_c << EOF
+$(vst)
+EOF
+    printf "${bok}%s\t%s\t%s\n\n" "${new_f}" "${new_b}" "${new_c}"
+    printf "${yok}Cleared %sM buffers " "$((old_b - new_b))"
+    printf "and %sM cache${dod}\n" "$((old_c - new_c))"
+}
+
+main() {
+    if [ "$(id -u)" -ne 0 ]; then
+        exec sudo su -c "sh $0 $*"
+    fi
+    # confirmation
+    printf "Clear Buffers? [yes/no]: "
+    read -r yn
+    case "$yn" in
+        [Yy]*)
+            name_colors
+            clear_buff
+            clean_up
+            ;;
+    esac
+}
+
+main "$@"

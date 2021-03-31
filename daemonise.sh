@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 # -*- coding:utf-8 -*-
 #
 # Copyright 2020 Pradyumna Paranjape
@@ -20,11 +20,16 @@
 # Files in this project contain regular utilities and aliases for linux (Fc31)
 
 # Daemonise
-read -p "Are you Sure[y/N] ?" response;
+printf "Are you Sure[y/N] ?"
+read -r response;
 
-case $response in
-	[Yy]*) nohup $@ 0<&- &>/dev/null &;;
-	*) exit;;
+case "$response" in
+    [Yy]*)
+        nohup "$*" 0<&- >/dev/null 2>/dev/null &
+        ;;
+    *)
+        exit 0
+        ;;
 esac
 
 echo "daemonised $1";

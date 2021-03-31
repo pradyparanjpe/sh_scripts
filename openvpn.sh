@@ -17,45 +17,54 @@
 # along with Prady_sh_scripts.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-function vpn_disconnect() {
-	for target in $1; do
-		echo "un-routing ${target}"
-		sudo route del "${target}"
-	done
-	echo "new routes:"
-	route
-	echo "Stopping VPN connection"
-	sudo systemctl stop openvpn-client@${2}
+set_vars() {
+    remote_targets="192.168.1.104"
 }
 
-function vpn_connect() {
-	echo "Starting VPN connection"
-	sudo systemctl start openvpn-client@${2}
-	sleep 5;
-	for target in $1; do
-		echo "routing ${target} to tun0"
-		sudo route add "${target}" dev tun0
-		if ping ${target} -c 2; then
-			echo "${target} is up"
-		else
-			echo "${target} is not responding"
-		fi
-	done
-	echo "new routes"
-	route
+unset_vars() {
+    unset remote_targets
+}
+
+vpn_disconnect() {
+    for target in $1; do
+        echo "un-routing ${target}"
+        sudo route del "${target}"
+    done
+    echo "new routes:"
+    route
+    echo "Stopping VPN connection"
+    sudo systemctl stop openvpn-client@"${2}"
+    unset target
+}
+
+vpn_connect() {
+    echo "Starting VPN connection"
+    sudo systemctl start openvpn-client@"${2}"
+    sleep 5;
+    for target in $1; do
+        echo "routing ${target} to tun0"
+        sudo route add "${target}" dev tun0
+        if ping "${target}" -c 2; then
+            echo "${target} is up"
+        else
+            echo "${target} is not responding"
+        fi
+    done
+    echo "new routes"
+    route
+    unset target
 }
 
 
-function main() {
-	echo "connecting remote: ${@}"
-	remote_targets=( "192.168.1.104" )
-	echo "openvpn-client@${1} is:"
-	if systemctl is-active openvpn-client@${1}; then
-		vpn_disconnect ${remote_targets} ${1}
-	else
-		vpn_connect ${remote_targets} ${1}
-	fi
-exit 0
+main() {
+    echo "connecting remote: $*"
+    echo "openvpn-client@${1} is:"
+    if systemctl is-active openvpn-client@"${1}"; then
+        vpn_disconnect "${remote_targets}" "${1}"
+    else
+        vpn_connect "${remote_targets}" "${1}"
+    fi
+    exit 0
 }
 
 main "$@"

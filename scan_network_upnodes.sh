@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 # -*- coding:utf-8 -*-
 #
 # Copyright 2020 Pradyumna Paranjape
@@ -21,36 +21,118 @@
 
 # Scan Up Nodes
 
-if [[ -z $1 ]]; then
-    range=0;
-    startip=2;
-    stopip=254;
-else
-    range=$1;
-    if [[ -z $2 ]]; then
-        startip=2;
-        stopip=254;
+
+set_vars() {
+    ip_range=0
+    startip=2
+    stopip=254
+    usage="
+usage: $0 IPRANGE STARTIP STOPIP"
+    help_msg="
+ping ip in 192.168.IPRANGE.* and report responding nodes
+
+positional arguments:
+
+IPRANGE:\tpenultimate 8 bits [default=${ip_range}]
+STARTIP:\tstarting node to scan [default=${startip}]
+STOPIP :\tlast node to scan [default=${stopip}]
+"
+}
+
+unset_vars() {
+    unset ip_range
+    unset startip
+    unset stopip
+    unset help_msg
+    unset usage
+}
+
+clean_exit () {
+    unset_vars
+    if [ -z "$1" ]; then
+        exit 0
     else
-        startip=$2;
-        if [[ -z $3 ]]; then
-            stopip=254;
-        else
-            stopip=$3;
+        exit "$1"
+    fi
+}
+
+cli () {
+    pos=
+    while [ $# -gt 0 ]; do
+        case "$1" in
+            -h|--help)
+                printf "%s\n" "${usage}"
+                # shellcheck disable=SC2059  # I do mean \t's
+                printf "${help_msg}\n"
+                unset pos
+                clean_exit 0
+                ;;
+            *)
+                if [ -n "${pos}" ]; then
+                    pos="${pos} ${1}"
+                else
+                    pos="${1}"
+                fi
+                shift 1
+                ;;
+        esac
+    done
+    # shellcheck disable=SC2086  # virbatim
+    set -- $pos
+    case $# in
+        3)
+            read -r ip_range startip stopip << EOF
+$*
+EOF
+            ;;
+        2)
+            read -r ip_range startip << EOF
+$*
+EOF
+            ;;
+        1)
+            ip_range="${1}"
+            ;;
+        0)
+            ;;
+        *)
+            printf "%s\n" "${usage}"
+            clean_exit 1
+            ;;
+    esac
+    if [ "$ip_range" -gt 255 ] || [ "$ip_range" -lt 0 ]; then
+        printf "bad IPRANGE: %s\n" "$ip_range"
+        exit 1
+    fi
+    if [ "$stopip" -gt 255 ] || [ "$stopip" -lt 0 ]; then
+        printf "bad STOPIP: %s\n" "$stopip"
+        exit 1
+    fi
+    if [ "$startip" -gt "${stopip}" ] || [ "$startip" -lt 0 ]; then
+        printf "bad STARTIP: %s\n" "$startip"
+        exit 1
+    fi
+    unset pos
+}
+
+scan () {
+    printf "Scanning 192.168.%s.%s to 192.168.%s.%s\n" "${ip_range}" \
+           "${startip}" "${ip_range}" "${stopip}"
+    printf "The following ip addresses are up:\n"
+
+    for testip in $(seq "$startip" "$stopip"); do
+        isdown="$(ping -c 1 "192.168.${ip_range}.${testip}" -w 1 -q)";
+        if [ "${isdown#*100}" = "${isdown}" ]; then
+            printf "%s\t" "${testip}";
         fi;
-    fi;
-fi;
+    done;
+}
 
-echo -e "Scanning 192.168.$range.$startip to 192.168.$range.$stopip.\nThe following ip addresses are up.";
+main() {
+    set_vars
+    cli "$@"
+    scan
+    clean_exit
+}
 
-for testip in $(seq $startip $stopip); do
-    isdown=`ping -c 1 "192.168.$range.$testip" -w 1 -q`;
-
-	if [[ $isdown =~ "100%" ]]; then
-        :;
-    else printf "$testip\t";
-    fi;
-
-done;
-
-printf "\n";
-exit;
+main "$@"
