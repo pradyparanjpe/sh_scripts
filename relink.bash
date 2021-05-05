@@ -17,7 +17,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Prady_sh_scripts.  If not, see <https://www.gnu.org/licenses/>.
 #
-# Files in this project contain regular utilities and aliases for linux (Fc31)
+# Files in this project contain regular utilities and aliases for linux (fc34)
 
 
 function set_vars() {

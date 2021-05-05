@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # -*- coding:utf-8 -*-
 #
-# Copyright 2020 Pradyumna Paranjape
+# Copyright 2020-2021 Pradyumna Paranjape
 #
 # This file is part of Prady_sh_scripts.
 # Prady_sh_scripts is free software: you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 # You should have received a copy of the GNU General Public License
 # along with Prady_sh_scripts.  If not, see <https://www.gnu.org/licenses/>.
 #
-# Files in this project contain regular utilities and aliases for linux (Fc31)
+# Files in this project contain regular utilities and aliases for linux (fc34)
 
 # Bind port 80 to net
-nohup ssh -R "${username}":19999:localhost:19999 serveo.net \
+nohup ssh -R "${USERNAME}":19999:localhost:19999 serveo.net \
         > "${HOME}/.server.log" 2>&1 &
