@@ -52,7 +52,7 @@ set_vars () {
 
     Positional Argument
     PERIOD\t\tPeriod in seconds to count down.
-    \t\t\t[This is passed to \033[0;31mdate\033[m]
+    \t\t\t[This is parsed using \033[0;31m$(which date)\033[m]
     "
 }
 
@@ -124,6 +124,10 @@ cli () {
                 ;;
         esac
     done
+    if [ -z "${period}" ]; then
+        printf "${usage}\n"
+        clean_exit 2
+    fi
 }
 
 get_period () {

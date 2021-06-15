@@ -24,27 +24,40 @@
 # This must be run strictly as root
 
 
-name_colors() {
-rok="\033[0;31;40m"  # red on black
-gok="\033[0;32;40m"  # green
-yok="\033[0;33;40m"  # yellow
-bok="\033[0;34;40m"  # blue
-dod="\033[m"         # default on default
+set_vars() {
+    confirmed=
+    old_b=
+    old_c=
+    new_f=
+    new_b=
+    new_c=
+    rok="\033[0;31;40m"  # red on black
+    gok="\033[0;32;40m"  # green
+    yok="\033[0;33;40m"  # yellow
+    bok="\033[0;34;40m"  # blue
+    dod="\033[m"         # default on default
+    usage="usage: ${0} [-h] [--help] [-y|--assumeyes] [-n|--assumeno]"
+    help_msg="
+    ${usage}
+
+    DESCRIPTION:
+    Clear cache by passing '3' to ${rok}/proc/sys/vm/drop_caches${dod}
+    After confirmation, ${rok}super-user${dod} privileges will be requested.
+
+    Optional Arguements:
+    -h\t\t\tprint usage message and exit
+    --help\t\tprint this help message and exit
+    -y|--assumeyes\tdon't prompt, assume yes to all
+    -n|--assumeno\tdon't prompt, assume no to all
+    "
 }
 
 
-vst() {
-    val="$(vmstat -S M | sed -n 3p | sed -r 's/\W+/ /g' | cut -d " " -f 5,6,7)"
-    printf "%s" "$val"
-    unset val
-}
-
-
-clean_up() {
-    unset oldf
+unset_vars() {
+    unset confirmed
     unset old_b
     unset old_c
-    unset newf
+    unset new_f
     unset new_b
     unset new_c
     unset rok
@@ -53,43 +66,103 @@ clean_up() {
     unset bok
     unset dod
     unset yn
+    unset help_msg
+    unset usage
 }
 
-clear_buff() {
-    echo "Old:"
-    printf "Free\tBuffer\tCache\n"
-    IFS=" " read -r old_f old_b old_c << EOF
-$(vst)
-EOF
-    printf "${rok}%s\t%s\t%s\n\n" "${old_f}" "${old_b}" "${old_c}"
-    # shellcheck disable=SC2059
-    printf "${gok}Clearing Buffers${dod}\n"
-    sync; echo 3 > /proc/sys/vm/drop_caches
-    printf "Buffers Cleared\n\n"
-    echo "New:"
+clean_exit() {
+    unset_vars
+    if [ -z "${1}" ]; then
+        exit 0
+    else
+    # shellcheck disable=SC2086
+        exit $1
+    fi
+    return
+}
+
+vst() {
+    val="$(vmstat -S M | sed -n 3p | sed -r 's/\W+/ /g' | cut -d " " -f 5,6,7)"
+    printf "%s" "$val"
+    unset val
+}
+
+
+show_free () {
     printf "Free\tBuffer\tCache\n"
     IFS=" " read -r new_f new_b new_c << EOF
 $(vst)
 EOF
-    printf "${bok}%s\t%s\t%s\n\n" "${new_f}" "${new_b}" "${new_c}"
+    printf "${1}%s\t%s\t%s\n\n${dod}" "${new_f}" "${new_b}" "${new_c}"
+}
+
+clear_buff() {
+    old_b="${new_b}"
+    old_c="${new_c}"
+    # shellcheck disable=SC2059
+    printf "${gok}Clearing Buffers${dod}\n"
+    sync
+    echo 3 > /proc/sys/vm/drop_caches
+    printf "Buffers Cleared\n\n"
+    printf "Free\tBuffer\tCache\n"
+    show_free "${bok}"
     printf "${yok}Cleared %sM buffers " "$((old_b - new_b))"
     printf "and %sM cache${dod}\n" "$((old_c - new_c))"
 }
 
+cli () {
+    while test $# -gt 0; do
+        case "${1}" in
+            -h)
+                # shellcheck disable=SC2059
+                printf "${usage}\n"
+                clean_exit
+                ;;
+            --help)
+                # shellcheck disable=SC2059
+                printf "${help_msg}\n"
+                clean_exit
+                ;;
+            -y|--assumeyes)
+                confirmed=true
+                shift
+                ;;
+            -n|--assumeno)
+                confirmed=false
+                shift
+                ;;
+            *)
+                # shellcheck disable=SC2059
+                printf "${usage}\n"
+                clean_exit 2
+                ;;
+        esac
+    done
+}
+
 main() {
-    if [ "$(id -u)" -ne 0 ]; then
-        exec sudo su -c "sh $0 $*"
+    set_vars
+    cli "$@"
+    show_free "${rok}"
+    if [ "${confirmed}" = false ]; then
+        clean_exit 0
+    elif [ -z "${confirmed}" ]; then
+        printf "Clear Buffers? [yes/NO]: "
+        read -r yn
+        case "$yn" in
+            [Yy]*)
+                confirmed=true
+                ;;
+            *)
+                clean_exit
+                ;;
+        esac
     fi
-    # confirmation
-    printf "Clear Buffers? [yes/no]: "
-    read -r yn
-    case "$yn" in
-        [Yy]*)
-            name_colors
-            clear_buff
-            clean_up
-            ;;
-    esac
+    if [ "$(id -u)" -ne 0 ]; then
+        exec sudo su -c "sh $0 -y"
+    fi
+    clear_buff
+    clean_exit
 }
 
 main "$@"
