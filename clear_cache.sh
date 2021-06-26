@@ -104,7 +104,6 @@ clear_buff() {
     sync
     echo 3 > /proc/sys/vm/drop_caches
     printf "Buffers Cleared\n\n"
-    printf "Free\tBuffer\tCache\n"
     show_free "${bok}"
     printf "${yok}Cleared %sM buffers " "$((old_b - new_b))"
     printf "and %sM cache${dod}\n" "$((old_c - new_c))"
