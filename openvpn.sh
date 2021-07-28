@@ -20,11 +20,22 @@
 #
 
 set_vars() {
+    usage="
+    usage: $0 [-h]
+    usage: $0 [--help]
+    usage: $0 [server-name] [remote]
+"
+    help_msg="${usage}
+
+    DESCRIPTION:
+    Connect to openvpn server with credentials
+    "
     remote_targets="192.168.1.104"
 }
 
 unset_vars() {
     unset remote_targets
+    unset help_msg
 }
 
 vpn_disconnect() {
@@ -57,6 +68,15 @@ vpn_connect() {
     unset target
 }
 
+cli () {
+    while test $# -gt 0; do
+        case "${1}" in
+            *)
+                # shellcheck disable=SC2059
+                printf "${usage}\n"
+                ;;
+        esac done
+}
 
 main() {
     echo "connecting remote: $*"
