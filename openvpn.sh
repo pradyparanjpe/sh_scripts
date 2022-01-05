@@ -19,6 +19,10 @@
 # along with Prady_sh_scripts.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+
+. "./common.sh" || exit 127
+
+
 set_vars() {
     usage="
     usage: $0 [-h]
@@ -73,16 +77,17 @@ cli () {
         case "${1}" in
             --help)
                 # shellcheck disable=SC2059
-                printf "${help_msg}\n"
+                clean_exit 0 "${help_msg}"
                 ;;
             *)
                 # shellcheck disable=SC2059
-                printf "${usage}\n"
+                clean_exit 1 "${usage}"
                 ;;
         esac done
 }
 
 main() {
+    check_dependencies "route" "systemctl"
     echo "connecting remote: $*"
     echo "openvpn-client@${1} is:"
     if systemctl is-active openvpn-client@"${1}"; then
@@ -90,7 +95,7 @@ main() {
     else
         vpn_connect "${remote_targets}" "${1}"
     fi
-    exit 0
+    clean_exit 0
 }
 
 main "$@"

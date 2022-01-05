@@ -19,6 +19,8 @@
 #
 # Files in this project contain regular utilities and aliases for linux (fc34)
 
+. "./common.sh" || exit 127
+
 set_vars() {
     # Variables
     robber="$(logname)"
@@ -56,23 +58,6 @@ unset_vars () {
     unset verbose
     unset help_msg
     unset usage
-}
-
-clean_exit() {
-    unset_vars
-    if [ -n "${1}" ] && [ "${1}" -ne "0" ]; then
-        if [ -n "${2}" ]; then
-            # shellcheck disable=SC2059
-            printf "${2}\n" >&2
-        fi
-        # shellcheck disable=SC2086
-        exit ${1}
-    fi
-    if [ -n "${2}" ]; then
-        # shellcheck disable=SC2059
-        printf "${2}\n"
-    fi
-    exit 0
 }
 
 get_cli() {

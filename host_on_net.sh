@@ -20,5 +20,6 @@
 # Files in this project contain regular utilities and aliases for linux (fc34)
 
 # Bind port 80 to net
+# USERNAME is defined on environment
 nohup ssh -R "${USERNAME}":19999:localhost:19999 serveo.net \
         > "${HOME}/.server.log" 2>&1 &

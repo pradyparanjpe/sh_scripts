@@ -24,6 +24,9 @@
 # This must be run strictly as root
 
 
+. "./common.sh" || exit 127
+
+
 set_vars() {
     rok="\033[0;31;40m"  # red on black
     gok="\033[0;32;40m"  # green
@@ -102,25 +105,6 @@ unset_vars() {
     unset remote_projects
     unset help_msg
     unset usage
-}
-
-clean_exit() {
-    unset_vars
-    if [ -n "${1}" ]  && [ "${1}" -ne "0" ] ; then
-        if [ -n "$2" ]; then
-            # shellcheck disable=SC2059
-            printf "$2\n" >&2
-        fi
-        # shellcheck disable=SC2086
-        exit $1
-    else
-        if [ -n "$2" ]; then
-            # shellcheck disable=SC2059
-            printf "$2\n"
-        fi
-        exit 0
-    fi
-    return
 }
 
 cli () {
@@ -301,6 +285,7 @@ loop_sync_api () {
 }
 
 main () {
+    check_dependencies "git" "gitlab-issues-sync" "python" "pip"
     set_vars
     affirm_py_gitlab
     cli "$@"

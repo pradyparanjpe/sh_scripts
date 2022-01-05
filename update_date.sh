@@ -21,6 +21,8 @@
 
 # retreive, display and/or set current time
 
+. "./common.sh" || exit 127
+
 set_vars() {
     set_time=
     current_time=
@@ -53,23 +55,6 @@ unset_vars() {
     unset source
     unset current_time
     unset set_time
-}
-
-clean_exit() {
-    unset_vars
-    if [ -n "${1}" ] && [ "${1}" -ne "0" ]; then
-        if [ -n "${2}" ]; then
-            # shellcheck disable=SC2059
-            printf "${2}\n" >&2
-        fi
-        # shellcheck disable=SC2086
-        exit ${1}
-    fi
-    if [ -n "${2}" ]; then
-        # shellcheck disable=SC2059
-        printf "${2}\n"
-    fi
-    exit 0
 }
 
 get_time() {
@@ -117,6 +102,7 @@ cli () {
 }
 
 main() {
+    check_dependencies "curl"
     set_vars
     cli "$@"
     if [ -z "${current_time}" ]; then

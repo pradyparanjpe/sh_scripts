@@ -20,6 +20,9 @@
 # Files in this project contain regular utilities and aliases for linux (fc34)
 
 
+. "./common.sh" || exit 127
+
+
 set_vars () {
     otherUser=
     otherIP=
@@ -61,23 +64,6 @@ unset_vars () {
     unset interactive
     unset usage
     unset help_msg
-}
-
-clean_exit() {
-    unset_vars
-    if [ -n "${1}" ] && [ "${1}" -ne "0" ]; then
-        if [ -n "${2}" ]; then
-            # shellcheck disable=SC2059
-            printf "${2}\n" >&2
-        fi
-        # shellcheck disable=SC2086
-        exit ${1}
-    fi
-    if [ -n "${2}" ]; then
-        # shellcheck disable=SC2059
-        printf "${2}\n"
-    fi
-    exit 0
 }
 
 cli () {
@@ -241,6 +227,8 @@ run_cmd () {
 }
 
 main () {
+    check_dependencies "loginctl"
+    check_one "waypipe" "ssh"
     set_vars
     cli "$@"
     parse_positional "${posStr}"

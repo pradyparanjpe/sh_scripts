@@ -21,6 +21,9 @@
 # This serves as a helper script for providing secrets
 
 
+. "./common.sh" || exit 127
+
+
 set_vars () {
     instance=
     usage="
@@ -49,23 +52,6 @@ unset_vars() {
     unset help_msg
     unset usage
     unset instance
-}
-
-clean_exit() {
-    unset_vars
-    if [ -n "${1}" ] && [ "${1}" -ne "0" ]; then
-        if [ -n "${2}" ]; then
-            # shellcheck disable=SC2059
-            printf "${2}\n" >&2
-        fi
-        # shellcheck disable=SC2086
-        exit ${1}
-    fi
-    if [ -n "${2}" ]; then
-        # shellcheck disable=SC2059
-        printf "${2}\n"
-    fi
-    exit 0
 }
 
 fail () {
@@ -106,6 +92,7 @@ git_pass () {
 }
 
 main() {
+    check_dependencies "pass" "git"
     set_vars
     cli "$@"
     git_pass

@@ -20,6 +20,9 @@
 # Files in this project contain regular utilities and aliases for linux (fc34)
 
 
+. "./common.sh" || exit 127
+
+
 set_vars() {
     verbose=false
     O_IFS="$IFS"
@@ -27,31 +30,30 @@ set_vars() {
     object=
     destin="${PWD}"
     mk_par=false
-    usage="usage: $0 [-h|--help] [-p|--parents] [-v|--verbose] OBJECT
-
-    or: $0 <optional arguments> SOURCE OBJECT DESTIN
-    or: $0 <optional arguments> DESTIN
+    usage="
+    usage:
+    ${0} -h
+    ${0} --help
+    ${0} <optional arguments> SOURCE OBJECT DESTIN
+    ${0} <optional arguments> DESTIN
 "
-    help_msg="
-Move object from SOURCE to DESTIN and leave a soft link at SOURCE
+    help_msg="${usage}
 
+    DESCRIPTION:
+    Move object from SOURCE to DESTIN and leave a soft link at SOURCE
 
-Optional Arguments:
+    Optional Arguments:
+    -h\t\tprint usage message and exit
+    --help\tprint this message and exit
+    -p|--parents\tmake parent paths if they don't exist
+    -v|--verbose\tprint verbose
 
--h|--help\tprint this message and exit
--p|--parents\tmake parent paths if they don't exist
--v|--verbose\tprint verbose
+    Optional Positional Argument:
+    DESTIN\t\tfuture parent path of object [default: ${destin}]
+    SOURCE\t\tfuture link parent [default: guessed from OBJECT]
 
-
-Optional Positional Argument:
-
-DESTIN\t\tfuture parent path of object [default: ${destin}]
-SOURCE\t\tfuture link parent [default: guessed from OBJECT]
-
-
-Required Positional Argument:
-
-OBJECT\t\tname of object to move and link {<file>|<directory>|...}
+    Required Positional Argument:
+    OBJECT\t\tname of object to move and link {<file>|<directory>|...}
 "
 }
 
@@ -69,28 +71,19 @@ unset_vars() {
 }
 
 
-clean_exit() {
-    unset_vars
-    if [ -n "${1}" ] && [ "${1}" -ne "0" ]; then
-        if [ -n "${2}" ]; then
-            # shellcheck disable=SC2059
-            printf "${2}\n" >&2
-        fi
-        # shellcheck disable=SC2086
-        exit ${1}
-    fi
-    if [ -n "${2}" ]; then
-        # shellcheck disable=SC2059
-        printf "${2}\n"
-    fi
-    exit 0
-}
-
 cli() {
     [ $# -eq 0 ] && clean_exit 0 "{usage}"
     pos=
     while test $# -gt 0; do
         case $1 in
+            -h)
+                unset pos
+                clean_exit 0 "${usage}"
+                ;;
+            --help)
+                unset pos
+                clean_exit 0 "${help_msg}"
+                ;;
             -v|--verbose)
                 verbose=true
                 shift
@@ -98,13 +91,6 @@ cli() {
             -p|--parents)
                 mk_par=true
                 shift
-                ;;
-            -h|--help)
-                printf "%s\n" "${usage}"
-                # shellcheck disable=2059
-                printf "${help_msg}\n"
-                unset pos
-                clean_exit 0
                 ;;
             *)
                 if [ -z "${pos}" ]; then
@@ -200,6 +186,7 @@ commands() {
 
 
 main() {
+    check_dependencies "realpath"
     set_vars
     cli "$@"
     auto_complete

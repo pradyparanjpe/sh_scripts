@@ -22,6 +22,9 @@
 # Scan Up Nodes
 
 
+. "./common.sh" || exit 127
+
+
 set_vars() {
     ip_range=0
     startip=2
@@ -54,24 +57,6 @@ unset_vars() {
     unset help_msg
     unset down
     unset usage
-}
-
-
-clean_exit() {
-    unset_vars
-    if [ -n "${1}" ] && [ "${1}" -ne "0" ]; then
-        if [ -n "${2}" ]; then
-            # shellcheck disable=SC2059
-            printf "${2}\n" >&2
-        fi
-        # shellcheck disable=SC2086
-        exit ${1}
-    fi
-    if [ -n "${2}" ]; then
-        # shellcheck disable=SC2059
-        printf "${2}\n"
-    fi
-    exit 0
 }
 
 

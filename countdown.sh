@@ -21,6 +21,9 @@
 
 # countdown timer
 
+
+. "./common.sh" || exit 127
+
 set_vars () {
     max_bar=$(($(tput cols)-30))
     byob="\033[93;40m"
@@ -76,23 +79,6 @@ unset_vars () {
     unset usage
     unset help_msg
     unset hltime
-}
-
-clean_exit() {
-    unset_vars
-    if [ -n "${1}" ] && [ "${1}" -ne "0" ]; then
-        if [ -n "${2}" ]; then
-            # shellcheck disable=SC2059
-            printf "${2}\n" >&2
-        fi
-        # shellcheck disable=SC2086
-        exit ${1}
-    fi
-    if [ -n "${2}" ]; then
-        # shellcheck disable=SC2059
-        printf "${2}\n"
-    fi
-    exit 0
 }
 
 cli () {
@@ -207,6 +193,7 @@ disp_count () {
 }
 
 main() {
+    check_dependencies "date"
     set_vars
     cli "$@"
     if [ -n "${as_time}" ]; then
