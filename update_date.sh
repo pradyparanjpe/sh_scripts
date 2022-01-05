@@ -85,14 +85,10 @@ cli () {
     while test $# -gt 0; do
         case "${1}" in
             -h)
-                # shellcheck disable=SC2059
-                printf "${usage}\n"
-                clean_exit
+                clean_exit 0 "${usage}"
                 ;;
             --help)
-                # shellcheck disable=SC2059
-                printf "${help_msg}\n"
-                clean_exit
+                clean_exit 0 "${help_msg}"
                 ;;
             -g|--get-time)
                 set_time=false

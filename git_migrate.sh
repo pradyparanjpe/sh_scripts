@@ -76,27 +76,29 @@ unset_vars() {
 
 clean_exit() {
     unset_vars
-    if [ -z "${1}" ]; then
-        exit 0
-    else
+    if [ -n "${1}" ] && [ "${1}" -ne "0" ]; then
+        if [ -n "${2}" ]; then
+            # shellcheck disable=SC2059
+            printf "${2}\n" >&2
+        fi
         # shellcheck disable=SC2086
-        exit $1
+        exit ${1}
     fi
-    return
+    if [ -n "${2}" ]; then
+        # shellcheck disable=SC2059
+        printf "${2}\n"
+    fi
+    exit 0
 }
 
 cli () {
     while test $# -gt 0; do
         case "${1}" in
             -h)
-                # shellcheck disable=SC2059
-                printf "${usage}\n"
-                clean_exit
+                clean_exit 0 "${usage}"
                 ;;
             --help)
-                # shellcheck disable=SC2059
-                printf "${help_msg}\n"
-                clean_exit
+                clean_exit 0 "${help_msg}"
                 ;;
             -f|--fetch)
                 task="fetch"
@@ -148,9 +150,7 @@ cli () {
                 shift
                 ;;
             *)
-                # shellcheck disable=SC2059
-                printf "${usage}\n"
-                clean_exit 1
+                clean_exit 1 "${usage}"
                 ;;
         esac
     done
@@ -248,8 +248,7 @@ main () {
             ;;
         add)
             if [ -z "${rnew}" ]; then
-                printf "Provide new url base using -n NEW\n"
-                clean_exit 1
+                clean_exit 1 "Provide new url base using -n NEW"
             fi
             add_all
             clean_exit

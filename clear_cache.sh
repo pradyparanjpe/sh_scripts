@@ -36,9 +36,12 @@ set_vars() {
     yok="\033[0;33;40m"  # yellow
     bok="\033[0;34;40m"  # blue
     dod="\033[m"         # default on default
-    usage="usage: ${0} [-h] [--help] [-y|--assumeyes] [-n|--assumeno]"
-    help_msg="
-    ${usage}
+    usage="
+    usage:
+    ${0} -h
+    ${0} --help
+    ${0} [-y|--assumeyes] [-n|--assumeno]"
+    help_msg="${usage}
 
     DESCRIPTION:
     Clear cache by passing '3' to ${rok}/proc/sys/vm/drop_caches${dod}
@@ -70,16 +73,24 @@ unset_vars() {
     unset usage
 }
 
+
 clean_exit() {
     unset_vars
-    if [ -z "${1}" ]; then
-        exit 0
-    else
-    # shellcheck disable=SC2086
-        exit $1
+    if [ -n "${1}" ] && [ "${1}" -ne "0" ]; then
+        if [ -n "${2}" ]; then
+            # shellcheck disable=SC2059
+            printf "${2}\n" >&2
+        fi
+        # shellcheck disable=SC2086
+        exit ${1}
     fi
-    return
+    if [ -n "${2}" ]; then
+        # shellcheck disable=SC2059
+        printf "${2}\n"
+    fi
+    exit 0
 }
+
 
 vst() {
     val="$(vmstat -S M | sed -n 3p | sed -r 's/\W+/ /g' | cut -d " " -f 5,6,7)"
@@ -113,14 +124,10 @@ cli () {
     while test $# -gt 0; do
         case "${1}" in
             -h)
-                # shellcheck disable=SC2059
-                printf "${usage}\n"
-                clean_exit
+                clean_exit 0 "${usage}"
                 ;;
             --help)
-                # shellcheck disable=SC2059
-                printf "${help_msg}\n"
-                clean_exit
+                clean_exit 0 "${help_msg}"
                 ;;
             -y|--assumeyes)
                 confirmed=true
@@ -131,9 +138,7 @@ cli () {
                 shift
                 ;;
             *)
-                # shellcheck disable=SC2059
-                printf "${usage}\n"
-                clean_exit 2
+                clean_exit 2 "${usage}"
                 ;;
         esac
     done
@@ -144,7 +149,7 @@ main() {
     cli "$@"
     show_free "${rok}"
     if [ "${confirmed}" = false ]; then
-        clean_exit 0
+        clean_exit
     elif [ -z "${confirmed}" ]; then
         printf "Clear Buffers? [yes/NO]: "
         read -r yn

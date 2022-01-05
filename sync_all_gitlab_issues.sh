@@ -125,17 +125,14 @@ clean_exit() {
 
 cli () {
     if [ $# = 0 ]; then
-        # shellcheck disable=SC2059
         clean_exit 1 "${usage}"
     fi
     while [ $# -gt 0 ]; do
         case "${1}" in
             -h)
-                # shellcheck disable=SC2059
                 clean_exit 0 "${usage}"
                 ;;
             --help)
-                # shellcheck disable=SC2059
                 clean_exit 0 "${help_msg}"
                 ;;
             -f|--pull)
@@ -171,7 +168,6 @@ cli () {
         esac
     done
     if [ -z "${config_file}" ]; then
-        # shellcheck disable=SC2059
         clean_exit 2 "${rok}Configuration file${dod} not provided\n${usage}"
     fi
 }

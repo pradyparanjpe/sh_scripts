@@ -28,21 +28,22 @@ set_vars() {
     stopip=254
     down=false
     usage="
-usage: $0 IPRANGE STARTIP STOPIP"
-    help_msg="
-ping ip in 192.168.IPRANGE.* and report responding nodes
+    usage:
+    $0 IPRANGE STARTIP STOPIP"
+    help_msg="${usage}
 
-positional arguments:
+    DESCRIPTION:
+    ping ip in 192.168.IPRANGE.* and report responding nodes
 
-IPRANGE:\tpenultimate 8 bits [default=${ip_range}]
-STARTIP:\tstarting node to scan [default=${startip}]
-STOPIP :\tlast node to scan [default=${stopip}]
+    Positional Arguments:
+    IPRANGE\tpenultimate 8 bits [default=${ip_range}]
+    STARTIP\tstarting node to scan [default=${startip}]
+    STOPIP\tlast node to scan [default=${stopip}]
 
-Optional Arguments:
-
--h|--help\tPrint this help message and exit
--d|--down\tPrint 'down' IPs as !down!
-
+    Optional Arguments:
+    -h\t\tPrint usage and exit
+    --help\tPrint this help message and exit
+    -d|--down\tPrint 'down' IPs as !down!
 "
 }
 
@@ -55,25 +56,36 @@ unset_vars() {
     unset usage
 }
 
-clean_exit () {
+
+clean_exit() {
     unset_vars
-    if [ -z "$1" ]; then
-        exit 0
-    else
-        exit "$1"
+    if [ -n "${1}" ] && [ "${1}" -ne "0" ]; then
+        if [ -n "${2}" ]; then
+            # shellcheck disable=SC2059
+            printf "${2}\n" >&2
+        fi
+        # shellcheck disable=SC2086
+        exit ${1}
     fi
+    if [ -n "${2}" ]; then
+        # shellcheck disable=SC2059
+        printf "${2}\n"
+    fi
+    exit 0
 }
+
 
 cli () {
     pos=
     while [ $# -gt 0 ]; do
         case "$1" in
-            -h|--help)
-                printf "%s\n" "${usage}"
-                # shellcheck disable=SC2059  # I do mean \t's
-                printf "${help_msg}\n"
+            -h)
                 unset pos
-                clean_exit 0
+                clean_exit 0 "${usage}"
+                ;;
+            --help)
+                unset pos
+                clean_exit 0 "${help_msg}"
                 ;;
             -d|--down)
                 down=true
@@ -108,21 +120,17 @@ EOF
         0)
             ;;
         *)
-            printf "%s\n" "${usage}"
-            clean_exit 1
+            clean_exit 1 "${usage}"
             ;;
     esac
     if [ "$ip_range" -gt 255 ] || [ "$ip_range" -lt 0 ]; then
-        printf "bad IPRANGE: %s\n" "$ip_range"
-        exit 1
+        clean_exit 1 "bad IPRANGE: ${ip_range}"
     fi
     if [ "$stopip" -gt 255 ] || [ "$stopip" -lt 0 ]; then
-        printf "bad STOPIP: %s\n" "$stopip"
-        exit 1
+        clean_exit 1 "bad STOPIP: ${stopip}"
     fi
     if [ "$startip" -gt "${stopip}" ] || [ "$startip" -lt 0 ]; then
-        printf "bad STARTIP: %s\n" "$startip"
-        exit 1
+        clean_exit 1 "bad STARTIP: ${startip}"
     fi
     unset pos
 }

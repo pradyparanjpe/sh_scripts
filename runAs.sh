@@ -63,32 +63,31 @@ unset_vars () {
     unset help_msg
 }
 
-clean_exit () {
-    if [ -z "${1}" ]; then
-        unset_vars
-        exit 0
-    else
-        if [ -n "${2}" ] && [ -n "${interactive}" ]; then
-            zenity --title="${titleStr}" --info --text="${2}";
+clean_exit() {
+    unset_vars
+    if [ -n "${1}" ] && [ "${1}" -ne "0" ]; then
+        if [ -n "${2}" ]; then
+            # shellcheck disable=SC2059
+            printf "${2}\n" >&2
         fi
-        unset_vars
         # shellcheck disable=SC2086
         exit ${1}
     fi
+    if [ -n "${2}" ]; then
+        # shellcheck disable=SC2059
+        printf "${2}\n"
+    fi
+    exit 0
 }
 
 cli () {
     while test $# -gt 0; do
         case "${1}" in
             -h)
-                # shellcheck disable=SC2059
-                printf "${usage}\n"
-                clean_exit
+                clean_exit 0 "${usage}"
                 ;;
             --help)
-                # shellcheck disable=SC2059
-                printf "${help_msg}\n"
-                clean_exit
+                clean_exit 0 "${help_msg}"
                 ;;
             -n|--non-interactive)
                 unset interactive

@@ -99,11 +99,9 @@ cli () {
     while test $# -gt 0; do
         case ${1} in
             -h)
-                # shellcheck disable=SC2059
                 clean_exit 0 "${usage}"
                 ;;
             --help)
-                # shellcheck disable=SC2059
                 clean_exit 0 "${help_msg}"
                 ;;
             -b|--bland)

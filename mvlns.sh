@@ -71,15 +71,23 @@ unset_vars() {
 
 clean_exit() {
     unset_vars
-    if [ -z "$1" ]; then
-        exit 0;
-    else
-        exit "$1"
+    if [ -n "${1}" ] && [ "${1}" -ne "0" ]; then
+        if [ -n "${2}" ]; then
+            # shellcheck disable=SC2059
+            printf "${2}\n" >&2
+        fi
+        # shellcheck disable=SC2086
+        exit ${1}
     fi
+    if [ -n "${2}" ]; then
+        # shellcheck disable=SC2059
+        printf "${2}\n"
+    fi
+    exit 0
 }
 
 cli() {
-    [ $# -eq 0 ] && printf "%s\n" "${usage}" && clean_exit 0
+    [ $# -eq 0 ] && clean_exit 0 "{usage}"
     pos=
     while test $# -gt 0; do
         case $1 in
@@ -109,10 +117,8 @@ cli() {
         esac
     done
     if [ -z "${pos}" ]; then
-        printf "No positional arguments found.\n\n"
-        printf "%s\n\n" "${usage}"
         unset pos
-        clean_exit 1
+        clean_exit 1 "No positional arguments found.\n\n${usage}\n"
     fi
     # shellcheck disable=SC2086 # setting $* to $pos
     set -- $pos
@@ -133,13 +139,9 @@ EOF
             IFS="$O_IFS"
             ;;
         *)
-            echo "bad usage"
-            echo "source: $source"
-            echo "object: $object"
-            echo "destin: $destin"
-            printf "%s" "$usage"
             unset pos
-            clean_exit 1
+            clean_exit 1 "bad usage\nsource: $source\nobject: $object\n\
+destin: $destin\n${usage}"
             ;;
     esac
     unset pos
@@ -169,16 +171,13 @@ sanity() {
         clean_exit 0
     fi
     if [ ! -d "${srcdir}" ]; then
-        printf "Directory '%s' doesn't exist. try -p option\n" "${srcdir}" >&2
-        clean_exit 127
+        clean_exit 127 "Directory '${srcdir}' doesn't exist. try -p option"
     fi
     if [ ! -d "${destin}" ]; then
-        printf "Directory '%s' doesn't exist. try -p option\n" "${destin}" >&2
-        clean_exit 127
+        clean_exit 127 "Directory '${destin}' doesn't exist. try -p option"
     fi
     if [ ! -e "${object}" ]; then
-        printf "'%s' doesn't exist.\n" "${object}" >&2
-        clean_exit 127
+        clean_exit 127 "'${object}' doesn't exist."
     fi
 }
 
