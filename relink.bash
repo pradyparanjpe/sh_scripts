@@ -20,6 +20,8 @@
 # Files in this project contain regular utilities and aliases for linux (fc34)
 
 
+# TODO: POSIX
+
 function set_vars() {
     usage="
     usage: ${0} [-h|--help] [-v|--verbose] [-c|--commit] LINK_DIR MOD_PAT [NEW_STR]

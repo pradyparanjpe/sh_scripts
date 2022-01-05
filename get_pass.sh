@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # -*- coding: utf-8; mode: shell-script -*-
 #
-# Copyright 2021 Pradyumna Paranjape
+# Copyright 2021, 2022 Pradyumna Paranjape
 # This file is part of Prady_sh_scripts.
 #
 # Prady_sh_scripts is free software: you can redistribute it and/or modify
@@ -30,17 +30,18 @@ set_vars () {
 "
     help_msg="${usage}
 
-    DESCRIPTION: |
-      Fetch password from password-store
+    DESCRIPTION:
+    Update password store git repository, then,
+    Fetch password from password-store.
 
 
-    Optional Arguments: |
-      -h\t\t\tprint usage message and exit
-      --help\t\t\tprint this help message and exit
+    Optional Arguments:
+    -h\t\tprint usage message and exit
+    --help\tprint this help message and exit
 
 
-    Optional Positional Argument: |
-      INSTANCE\tfetch password from password store for INSTANCE
+    Optional Positional Argument:
+    INSTANCE\tfetch password from password store for INSTANCE
 "
 }
 
@@ -98,16 +99,16 @@ cli () {
     fi
 }
 
-get_pass () {
+git_pass () {
     git -C "${PASSWORD_STORE_DIR:-${HOME}/.password-store}" pull \
         1>/dev/null 2>&1
-    pass show "${instance}" | head -n 1
+    pass show "${instance}"
 }
 
 main() {
     set_vars
     cli "$@"
-    get_pass
+    git_pass
     clean_exit
 }
 

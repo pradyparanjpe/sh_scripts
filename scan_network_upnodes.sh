@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # -*- coding:utf-8 -*-
 #
-# Copyright 2020-2021 Pradyumna Paranjape
+# Copyright 2020-2022 Pradyumna Paranjape
 #
 # This file is part of Prady_sh_scripts.
 # Prady_sh_scripts is free software: you can redistribute it and/or modify
@@ -26,6 +26,7 @@ set_vars() {
     ip_range=0
     startip=2
     stopip=254
+    down=false
     usage="
 usage: $0 IPRANGE STARTIP STOPIP"
     help_msg="
@@ -36,6 +37,12 @@ positional arguments:
 IPRANGE:\tpenultimate 8 bits [default=${ip_range}]
 STARTIP:\tstarting node to scan [default=${startip}]
 STOPIP :\tlast node to scan [default=${stopip}]
+
+Optional Arguments:
+
+-h|--help\tPrint this help message and exit
+-d|--down\tPrint 'down' IPs as !down!
+
 "
 }
 
@@ -44,6 +51,7 @@ unset_vars() {
     unset startip
     unset stopip
     unset help_msg
+    unset down
     unset usage
 }
 
@@ -66,6 +74,10 @@ cli () {
                 printf "${help_msg}\n"
                 unset pos
                 clean_exit 0
+                ;;
+            -d|--down)
+                down=true
+                shift 1
                 ;;
             *)
                 if [ -n "${pos}" ]; then
@@ -119,13 +131,20 @@ scan () {
     printf "Scanning 192.168.%s.%s to 192.168.%s.%s\n" "${ip_range}" \
            "${startip}" "${ip_range}" "${stopip}"
     printf "The following ip addresses are up:\n"
+    if ${down}; then
+        printf "OR !down!:\n"
+    fi
+    printf ""
 
     for testip in $(seq "$startip" "$stopip"); do
         isdown="$(ping -c 1 "192.168.${ip_range}.${testip}" -w 1 -q)";
         if [ "${isdown#*100}" = "${isdown}" ]; then
             printf "%s\t" "${testip}";
+        elif ${down}; then
+            printf "!%s!\t" "${testip}";
         fi;
     done;
+    printf "\n"
 }
 
 main() {

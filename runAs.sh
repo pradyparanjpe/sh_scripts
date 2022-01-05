@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # -*- coding:utf-8 -*-
 #
-# Copyright 2020-2021 Pradyumna Paranjape
+# Copyright 2020-2022 Pradyumna Paranjape
 #
 # This file is part of Prady_sh_scripts.
 # Prady_sh_scripts is free software: you can redistribute it and/or modify
@@ -27,9 +27,12 @@ set_vars () {
     posStr=
     titleStr=
     interactive=true
-    usage="usage: $0 [-h] [--help] [-u USER|--user USER] [-i IP|--ip IP] [-p PROG|--ip PROG] [EXECSTR]"
-    help_msg="
-    ${usage}
+    usage="
+    usage:
+    ${0} -h
+    ${0} --help
+    ${0} [-u USER|--user USER] [-i IP|--ip IP] [-p PROG|--ip PROG] [EXECSTR]"
+    help_msg="${usage}
 
     Description:
     Run PROGRAM as USER at REMOTEIP using ssh -X tunnel (or waypipe)
@@ -171,32 +174,39 @@ prompt_vars() {
     fi
     titleStr="${otherUser}@${otherIP}:${execCmd}"
     if [ -z "${otherUser}" ]; then
-        otherUser=$(zenity --title="Run ${titleStr}" --text="Username:" --entry);
+        otherUser="$(zenity --title="Run ${titleStr}" \
+--text="Username:" --entry)";
     fi
     titleStr="${otherUser}@${otherIP}:${execCmd}"
     if [ -z "${otherIP}" ]; then
         # Check if second positional argument is supplied
-        otherIP=$(zenity --title="Run ${titleStr}" --text="IP Address:" --entry);
+        otherIP="$(zenity --title="Run ${titleStr}" \
+--text="IP Address:" --entry)";
     fi
     titleStr="${otherUser}@${otherIP}:${execCmd}"
     if [ -z "${execCmd}" ]; then
-        execCmd=$(zenity --title="Run ${titleStr}" --text="Application to open" --entry);
+        execCmd="$(zenity --title="Run ${titleStr}" \
+--text="Application to open" --entry)";
     fi
 }
 
 x_proto() {
-    protocol="$(loginctl show-session "$(loginctl | awk '/tty/ {print $1}')" -p Type | cut -d "=" -f 2)"
+    protocol="$(loginctl show-session \
+"$(loginctl | awk '/tty/ {print $1}')" -p Type | cut -d "=" -f 2)"
     if [ "${protocol}" = "wayland" ]; then
         # check availability of waypipe
         #use waypipe
         if ! command -v "waypipe" >/dev/null 2>&1; then
             unset protocol
-            clean_exit 127 "Wayland display Server requires waypipe at both sides"
+            clean_exit 127 "Wayland Server requires waypipe at both sides"
         fi
-        # execCmd="waypipe ssh ${otherUser}@${otherIP} nohup ${execCmd} 1>/dev/null 2>&1 &"
-        execCmd="waypipe ssh ${otherUser}@${otherIP} nohup ${execCmd} 1>/dev/null 2>&1"
+        # execCmd="waypipe ssh ${otherUser}@${otherIP} \
+            # nohup ${execCmd} 1>/dev/null 2>&1 &"
+        execCmd="waypipe ssh ${otherUser}@${otherIP} \
+nohup ${execCmd} 1>/dev/null 2>&1"
     else
-        execCmd="ssh -X ${otherUser}@${otherIP} nohup ${execCmd} 1>/dev/null 2>&1 &"
+        execCmd="ssh -X ${otherUser}@${otherIP} \
+nohup ${execCmd} 1>/dev/null 2>&1 &"
     fi
     unset protocol
     # return

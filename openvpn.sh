@@ -1,7 +1,7 @@
 #! /usr/bin/env sh
 # -*- coding: utf-8; mode: shell-script; -*-
 #
-# Copyright 2020-2021 Pradyumna Paranjape
+# Copyright 2020-2022 Pradyumna Paranjape
 #
 # This file is part of Prady_sh_scripts.
 #
@@ -71,6 +71,10 @@ vpn_connect() {
 cli () {
     while test $# -gt 0; do
         case "${1}" in
+            --help)
+                # shellcheck disable=SC2059
+                printf "${help_msg}\n"
+                ;;
             *)
                 # shellcheck disable=SC2059
                 printf "${usage}\n"

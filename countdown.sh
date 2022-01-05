@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # -*- coding:utf-8 -*-
 #
-# Copyright 2020-2021-2021 Pradyumna Paranjape
+# Copyright 2020-2021-2022 Pradyumna Paranjape
 #
 # This file is part of Prady_sh_scripts.
 # Prady_sh_scripts is free software: you can redistribute it and/or modify
@@ -35,9 +35,13 @@ set_vars () {
     progress=
     period=
     as_time=
-    usage="usage: $0 [-h] [--help] [-p|progress] [-u N|--update N] [-t|--time] PERIOD"
-    help_msg="
-    ${usage}
+    usage="
+    usage:
+    ${0} -h
+    ${0} --help
+    ${0} [-p|progress] [-u N|--update N] [-t|--time] PERIOD
+"
+    help_msg="${usage}
 
     DESCRIPTION:
     Display a countdown timer on STDOUT, that updates every second
@@ -74,14 +78,21 @@ unset_vars () {
     unset hltime
 }
 
-clean_exit () {
+clean_exit() {
     unset_vars
-    if [ -z "${1}" ]; then
-        exit 0
-    else
+    if [ -n "${1}" ] && [ "${1}" -ne "0" ]; then
+        if [ -n "${2}" ]; then
+            # shellcheck disable=SC2059
+            printf "${2}\n" >&2
+        fi
         # shellcheck disable=SC2086
         exit ${1}
     fi
+    if [ -n "${2}" ]; then
+        # shellcheck disable=SC2059
+        printf "${2}\n"
+    fi
+    exit 0
 }
 
 cli () {
@@ -89,13 +100,11 @@ cli () {
         case ${1} in
             -h)
                 # shellcheck disable=SC2059
-                printf "${usage}\n"
-                clean_exit
+                clean_exit 0 "${usage}"
                 ;;
             --help)
                 # shellcheck disable=SC2059
-                printf "${help_msg}\n"
-                clean_exit
+                clean_exit 0 "${help_msg}"
                 ;;
             -b|--bland)
                 unset colors
@@ -125,8 +134,7 @@ cli () {
         esac
     done
     if [ -z "${period}" ]; then
-        printf "${usage}\n"
-        clean_exit 2
+        clean_exit 2 "${usage}"
     fi
 }
 
@@ -165,8 +173,7 @@ color_hl () {
 disp_count () {
     # shellcheck disable=SC2086
     if [ "$period" -lt 1 ]; then
-        printf "We don't have a time-machine\n" >&2
-        clean_exit 1
+        clean_exit 1 "We don't have a time-machine"
     fi
     max_period="${period}"
     # shellcheck disable=SC2086

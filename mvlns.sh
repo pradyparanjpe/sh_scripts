@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # -*- coding:utf-8 -*-
 #
-# Copyright 2020-2021 Pradyumna Paranjape
+# Copyright 2020-2022 Pradyumna Paranjape
 #
 # This file is part of Prady_sh_scripts.
 # Prady_sh_scripts is free software: you can redistribute it and/or modify

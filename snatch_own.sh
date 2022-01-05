@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # -*- coding:utf-8 -*-
 #
-# Copyright 2020-2021 Pradyumna Paranjape
+# Copyright 2020-2022 Pradyumna Paranjape
 #
 # This file is part of Prady_sh_scripts.
 # Prady_sh_scripts is free software: you can redistribute it and/or modify
@@ -19,33 +19,37 @@
 #
 # Files in this project contain regular utilities and aliases for linux (fc34)
 
-set_var() {
+set_vars() {
     # Variables
     robber="$(logname)"
     syndicate=
     recurse=false
     verbose=false
-    usage="usage: $0 [-h|--help] [-R] [-v] [-u|--user ROBBER] \
-[-g|--group SYNDICATE] TARGET"
-    help_msg="
+    usage="
+    usage:
+    ${0} -h
+    ${0} --help
+    ${0} [-R] [-v] [-u|--user ROBBER] [-g|--group SYNDICATE] TARGET
+"
+    help_msg="${usage}
 
-Snatch Ownership
+    Snatch Ownership
 
-Optional Arguments
--h|--help\t\tprint this message and exit
--R\t\t\tapply recursive
--v\t\t\tverbose outout
--u|--user ROBBER\tgive ownership to ROBBER [default: ${robber}]
--g|--group SYNDICATE\tgroup ownership [default: ROBBER's primary]
+    Optional Arguments
+    -h\t\t\t\tprint usage message and exit
+    --help\t\t\tprint this message and exit
+    -R\t\t\t\tapply recursive
+    -v\t\t\t\tverbose outout
+    -u|--user ROBBER\t\tgive ownership to ROBBER [default: ${robber}]
+    -g|--group SYNDICATE\tgroup ownership [default: ROBBER's primary]
 
-Positional Argument
+    Positional Argument
 
-target
-
+    TARGET\t\t\tTARGET to be robbed
 "
 }
 
-unset_var () {
+unset_vars () {
     unset robber
     unset syndicate
     unset recurse
@@ -55,23 +59,33 @@ unset_var () {
 }
 
 clean_exit() {
-    unset_var
-    if [ -z "$1" ]; then
-       exit 0
-    else
-        exit "${1}"
+    unset_vars
+    if [ -n "${1}" ] && [ "${1}" -ne "0" ]; then
+        if [ -n "${2}" ]; then
+            # shellcheck disable=SC2059
+            printf "${2}\n" >&2
+        fi
+        # shellcheck disable=SC2086
+        exit ${1}
     fi
+    if [ -n "${2}" ]; then
+        # shellcheck disable=SC2059
+        printf "${2}\n"
+    fi
+    exit 0
 }
 
 get_cli() {
-    [ $# -eq 0 ] && printf "%s\n" "$usage" >&2 && clean_exit 1
+    [ $# -eq 0 ] && clean_exit 1 "$usage"
     while test $# -ge 1; do
         case $1 in
-            -h|--help)
-                printf "%s\n" "${usage}"
+            -h)
                 # shellcheck disable=SC2059
-                printf "${help_msg}\n"
-                clean_exit;
+                clean_exit 0 "${usage}"
+                ;;
+            --help)
+                # shellcheck disable=SC2059
+                clean_exit 0 "${help_msg}";
                 ;;
             -R)
                 recurse=true
@@ -96,7 +110,11 @@ get_cli() {
                 shift 1
                 ;;
             *)
-                target="${target}${1}"
+                if [ -z "${target}" ]; then
+                    target="${1}"
+                else
+                    target="${target} ${1}"
+                fi
                 shift 1
                 ;;
         esac
@@ -108,18 +126,15 @@ get_cli() {
 
 sanity_check () {
     if [ -z "${target}" ]; then
-        printf "%s\n" "${usage}" >&2
-        clean_exit 1
+        clean_exit 1 "{usage}"
     fi
 
     if [ ! -e "${target}" ]; then
-        printf "  [ERROR] Confirm that %s exists.\n" "${target}" >&2
-        clean_exit 127
+        clean_exit 127 "[ERROR] Confirm that ${target} exists."
     fi
 
     if ! id -u "${robber}" >> /dev/null; then
-        printf "[ERROR]   Confirm that the %s exists.\n" "${robber}" >&2
-        clean_exit 127
+        clean_exit 127 "[ERROR] Confirm that the ${robber} exists."
     fi
 }
 
@@ -141,11 +156,11 @@ prep_command () {
 
 
 main () {
-    set_var
+    set_vars
     get_cli "$@"
     sanity_check
     prep_command
+    clean_exit
 }
 
 main "$@"
-clean_exit
