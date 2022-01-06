@@ -23,7 +23,7 @@
 
 # This must be run strictly as root
 
-. "./common.sh" || exit 127
+. "$(dirname "${0}")/common.sh" || exit 127
 
 set_vars() {
     confirmed=

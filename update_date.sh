@@ -21,7 +21,7 @@
 
 # retreive, display and/or set current time
 
-. "./common.sh" || exit 127
+. "$(dirname "${0}")/common.sh" || exit 127
 
 set_vars() {
     set_time=
@@ -35,7 +35,7 @@ set_vars() {
 
 DESCRIPTION:
     Retreive current date and optionally, set current date.
-    Further, \e[0;31;40msuper-user\e[m privilege is requested to set time.
+    Further, \033[0;31;40msuper-user\033[m privilege is requested to set time.
 
 Optional Arguements:
     -h\t\t\t\tPrint usage message and exit
@@ -46,7 +46,7 @@ Optional Arguements:
 
 
 Optional Positional Argument:
-    SOURCE\t\t\tsource domain [default: \e[0;32;40m${source}\e[m]"
+    SOURCE\t\t\tsource domain [default: \033[0;32;40m${source}\033[m]"
 }
 
 unset_vars() {
@@ -62,7 +62,7 @@ get_time() {
                     grep '^Date:' | cut -d' ' -f3-6)Z"
     if [ "${current_time}" = "Z" ]; then
         clean_exit 1 "Date couldn't be retreived, \
-check the domain \e[3;40;31m${source}\e[m"
+check the domain \033[3;40;31m${source}\033[m"
     fi
 }
 
@@ -85,7 +85,7 @@ cli () {
                 ;;
             -m|--manually|-m=*|--manually=*)
                 if [ ! "${1#*=}" = "${1}" ]; then
-                    current_time="$(echo "$1" | cut -d "=" -f 2)"
+                    current_time="$(printf "%s" "$1" | cut -d "=" -f 2)"
                 else
                     shift
                     current_time="${1}"
@@ -108,7 +108,7 @@ main() {
     if [ -z "${current_time}" ]; then
         get_time
     fi
-    printf "\e[4;36;40m%s\e[m: " "${source}"
+    printf "\033[4;36;40m%s\033[m: " "${source}"
     date -d "${current_time}"
     if [ "${set_time}" = false ]; then
         clean_exit 0

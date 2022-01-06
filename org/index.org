@@ -30,4 +30,4 @@
 
 * Scope
   Files in this project contain regular utilities and aliases for linux (fc35);
-  Preferably in POSIX.
+  Preferably in POSIX-compliant shell scripts.

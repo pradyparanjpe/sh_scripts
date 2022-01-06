@@ -24,7 +24,7 @@
 # This must be run strictly as root
 
 
-. "./common.sh" || exit 127
+. "$(dirname "${0}")/common.sh" || exit 127
 
 
 set_vars() {
@@ -218,10 +218,10 @@ couldn't be inferred"
 
 # Affirm python gitlab-issues-sync
 affirm_py_gitlab () {
-    if ! builtin command -v pip >/dev/null 2>&1; then
+    if ! command -v pip >/dev/null 2>&1; then
         clean_exit 127 "Install ${rok}python3-pip${dod} and try again"
     fi
-    if ! builtin command -v python >/dev/null 2>&1; then
+    if ! command -v python >/dev/null 2>&1; then
         clean_exit 127 "Install ${rok}python3${dod} and try again"
     fi
     pyver="$(python --version | cut -d " " -f 2 | cut -d "." -f 1)"
@@ -229,7 +229,7 @@ affirm_py_gitlab () {
         clean_exit 127 "Wrong version of python found: ${rok}${pyver}${dod}. \
 Use python3"
     fi
-    if ! builtin command -v gitlab-issues-sync >/dev/null 2>&1; then
+    if ! command -v gitlab-issues-sync >/dev/null 2>&1; then
         pip install -U colored
         pip install -U gitlab-issues-sync
     fi

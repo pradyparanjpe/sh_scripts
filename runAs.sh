@@ -20,7 +20,7 @@
 # Files in this project contain regular utilities and aliases for linux (fc34)
 
 
-. "./common.sh" || exit 127
+. "$(dirname "${0}")/common.sh" || exit 127
 
 
 set_vars () {

@@ -22,7 +22,7 @@
 # Scan Up Nodes
 
 
-. "./common.sh" || exit 127
+. "$(dirname "${0}")/common.sh" || exit 127
 
 
 set_vars() {

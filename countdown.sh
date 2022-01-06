@@ -22,7 +22,7 @@
 # countdown timer
 
 
-. "./common.sh" || exit 127
+. "$(dirname "${0}")/common.sh" || exit 127
 
 set_vars () {
     max_bar=$(($(tput cols)-30))
