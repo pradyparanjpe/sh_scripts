@@ -36,6 +36,7 @@ set_vars() {
 DESCRIPTION:
     Retreive current date and optionally, set current date.
     Further, \033[0;31;40msuper-user\033[m privilege is requested to set time.
+    This is especially useful from behind a proxy server.
 
 Optional Arguements:
     -h\t\t\t\tPrint usage message and exit

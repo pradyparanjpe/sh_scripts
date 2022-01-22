@@ -81,7 +81,8 @@ cli () {
         esac
     done
     if [ -z "${instance}" ]; then
-        clean_exit 1 "Error: instance not specified\n"
+        pass list
+        clean_exit 0 "\nSpecify one of above instances"
     fi
 }
 
