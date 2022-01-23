@@ -19,25 +19,25 @@
 #
 # Files in this project contain regular utilities and aliases for linux (fc34)
 """
-Convert color:
-   - Invert color
+Convert colour:
+   - Invert colour
    - Invert shade
-   - Invert color and shade
+   - Invert colour and shade
 """
 
 from argparse import ArgumentParser, RawDescriptionHelpFormatter
 from typing import Dict, List, Sequence, Tuple, Union
 
 
-class ColorInvertError(Exception):
+class ColourInvertError(Exception):
     """Base Error"""
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
 
-class Color():
+class Colour():
     """
-    Color (default representation as RGBA)
+    Colour (default representation as RGBA)
 
     Attributes:
         red: red (0-255)
@@ -45,26 +45,26 @@ class Color():
         blue: blue (0-255)
 
     Args:
-        color: str: hex color string: of the form #fff[f] or #ffffff[ff] OR
+        colour: str: hex colour string: of the form #fff[f] or #ffffff[ff] OR
             Tuple[int, ...]: RGBA int of the form (255, 255, 255, 255).
             Alpha, the fourth component is assumed to be max if unavailable.
-        space: int: color space (15 or 255)
+        space: int: colour space (15 or 255)
 
     """
-    def __init__(self, color: Union[str, Sequence[int]], space: int = None):
-        if isinstance(color, str):
+    def __init__(self, colour: Union[str, Sequence[int]], space: int = None):
+        if isinstance(colour, str):
             try:
-                if 'rgb' in color:
-                    self.parsergb(color)
+                if 'rgb' in colour:
+                    self.parsergb(colour)
                     self.space = space or 0xff
                     return
-                self.parsehex(color, space)
+                self.parsehex(colour, space)
             except Exception as err:
-                raise ColorInvertError('Bad color string format') from err
-        elif isinstance(color, Sequence):
-            self.red, self.green, self.blue = color[:3]
+                raise ColourInvertError('Bad colour string format') from err
+        elif isinstance(colour, Sequence):
+            self.red, self.green, self.blue = colour[:3]
             self.space = space or 0xff
-            self.alpha = color[-1] if len(color) == 4 else None
+            self.alpha = colour[-1] if len(colour) == 4 else None
 
     def __iter__(self):
         """Iterate over red, green, blue."""
@@ -76,7 +76,7 @@ class Color():
 
     @property
     def hex(self) -> str:
-        """Hex-coded color"""
+        """Hex-coded colour"""
         hex_str = ['#']
         if self.space == 0xff:
             for pig in self.__iter__():
@@ -91,78 +91,78 @@ class Color():
         return ''.join(hex_str)
 
     @hex.setter
-    def hex(self, color: str):
-        self.__init__(color)
+    def hex(self, colour: str):
+        self.__init__(colour)
 
     @property
     def rgba(self) -> Tuple[int, ...]:
-        """RGBA-codeed Color"""
+        """RGBA-codeed colour"""
         return tuple([pig for pig in self.__iter__()] +
                      [0xff if self.alpha is None else self.alpha])
 
     @rgba.setter
-    def rgba(self, color: Tuple[int, ...]):
-        self.__init__(color)
+    def rgba(self, colour: Tuple[int, ...]):
+        self.__init__(colour)
 
     @property
-    def shade(self) -> 'Color':
-        """Invertred color shade"""
-        out_color: List[int] = []
+    def shade(self) -> 'Colour':
+        """Invertred colour shade"""
+        out_colour: List[int] = []
         lightest = self.max()
         darkest = self.min()
         for pigment in self.__iter__():
-            out_color.append(pigment + 0xff - darkest - lightest)
+            out_colour.append(pigment + 0xff - darkest - lightest)
         if self.alpha is not None:
-            out_color.append(self.alpha)
-        return Color(out_color, space=self.space)
+            out_colour.append(self.alpha)
+        return Colour(out_colour, space=self.space)
 
     @property
-    def invert(self) -> 'Color':
-        """Inverted color"""
-        out_color: List[int] = []
+    def invert(self) -> 'Colour':
+        """Inverted colour"""
+        out_colour: List[int] = []
         for pigment in self.__iter__():
-            out_color.append(0xff - pigment)
+            out_colour.append(0xff - pigment)
         if self.alpha is not None:
-            out_color.append(self.alpha)
-        return Color(out_color, space=self.space)
+            out_colour.append(self.alpha)
+        return Colour(out_colour, space=self.space)
 
-    def parsergb(self, color: str):
+    def parsergb(self, colour: str):
         """
-        Parse rgba-coded color of the form rgba(r, g, b, a) or rgb(r, g, b).
+        Parse rgba-coded colour of the form rgba(r, g, b, a) or rgb(r, g, b).
 
         Args:
-            color: color string
+            colour: colour string
         """
-        color_tup = color.split('(')[1].split(')')[0]
-        if 'rgba' in color:
-            red_str, green_str, blue_str, alpha_str = color_tup.split(',')
+        colour_tup = colour.split('(')[1].split(')')[0]
+        if 'rgba' in colour:
+            red_str, green_str, blue_str, alpha_str = colour_tup.split(',')
             self.alpha = int(alpha_str)
         else:
-            red_str, green_str, blue_str = color_tup.split(',')
+            red_str, green_str, blue_str = colour_tup.split(',')
             self.alpha = None
         self.red = int(red_str)
         self.green = int(green_str)
         self.blue = int(blue_str)
 
-    def parsehex(self, color: str, space: int = None):
+    def parsehex(self, colour: str, space: int = None):
         """
-        Parse hex-coded color of the form [#]RGB[A] or [#]RRGGBB[AA].
+        Parse hex-coded colour of the form [#]RGB[A] or [#]RRGGBB[AA].
 
         Args:
-            color: color string
+            colour: colour string
         """
-        color = color.strip("#")
-        if len(color) >= 6:
-            self.red = int(color[:2], base=16)
-            self.green = int(color[2:4], base=16)
-            self.blue = int(color[4:6], base=16)
-            self.alpha = int(color[6:], base=16) if color[6:] else None
+        colour = colour.strip("#")
+        if len(colour) >= 6:
+            self.red = int(colour[:2], base=16)
+            self.green = int(colour[2:4], base=16)
+            self.blue = int(colour[4:6], base=16)
+            self.alpha = int(colour[6:], base=16) if colour[6:] else None
             self.space = space or 0xff
         else:
-            self.red = int(color[0], base=16) * 0x10
-            self.green = int(color[1], base=16) * 0x10
-            self.blue = int(color[2], base=16) * 0x10
-            self.alpha = int(color[3:], base=16) if color[3:] else None
+            self.red = int(colour[0], base=16) * 0x10
+            self.green = int(colour[1], base=16) * 0x10
+            self.blue = int(colour[2], base=16) * 0x10
+            self.alpha = int(colour[3:], base=16) if colour[3:] else None
             self.space = space or 0xf
 
     def max(self) -> int:
@@ -179,14 +179,14 @@ def cli():
     Parse command line
 
     """
-    description = '''Transforms from COLOR:
-    1. invert color
+    description = '''Transforms from COLOUR:
+    1. invert colour
     2. invert shade
-    3. invert color and shade
+    3. invert colour and shade
 
 Useful while converting style sheets to/from dark mode.
 
-Format of COLOR:
+Format of COLOUR:
     Remember to quote '#', '()' OR skip \\#, \\(, \\).
 
     1. [#]RGB[A]
@@ -198,37 +198,37 @@ Format of COLOR:
         r: Red, g: Green, b: Blue, a: Alpha (integers) [0 -> 255]'''
     parser = ArgumentParser(description=description,
                             formatter_class=RawDescriptionHelpFormatter)
-    parser.add_argument(dest='color',
-                        metavar='COLOR',
+    parser.add_argument(dest='colour',
+                        metavar='COLOUR',
                         type=str,
-                        help='input color')
+                        help='input colour')
     parser.add_argument('-g',
                         '--gtk',
                         action='store_true',
-                        help='display colors in a GTK+ 3 window')
+                        help='display colours in a GTK+ 3 window')
     return vars(parser.parse_args())
 
 
-def print_colors(color: Color):
-    """Print colors to STDOUT."""
-    print('Original:', color)
-    print('Shade:', color.shade)
-    print('Invert:', color.invert)
-    print('Shade Invert:', color.invert.shade)
+def print_colours(colour: Colour):
+    """Print colours to STDOUT."""
+    print('Original:', colour)
+    print('Invert:', colour.invert)
+    print('Shade:', colour.shade)
+    print('Shade Invert:', colour.invert.shade)
 
 
-def gui(color: Color):
-    """Show colors in GUI window."""
+def gui(colour: Colour):
+    """Show colours in GUI window."""
     import gi
     gi.require_version('Gtk', '3.0')
     gi.require_version('Gdk', '3.0')
     # import failures are caught later
     from gi.repository import Gdk, Gtk  # type: ignore
 
-    class ColorUI(Gtk.Window):
-        """User interface displaying all transformed colors."""
-        def __init__(self, color: Color):
-            self.color = color
+    class ColourUI(Gtk.Window):
+        """User interface displaying all transformed colours."""
+        def __init__(self, colour: Colour):
+            self.colour = colour
             super().__init__()
             self.init_ui()
             self.connect('destroy', Gtk.main_quit)
@@ -237,31 +237,31 @@ def gui(color: Color):
         def init_ui(self):
             """Initialize other UI elements"""
             grid = Gtk.Grid()
-            self.put_colors(grid)
+            self.put_colours(grid)
             self.add(grid)
             self.show_all()
 
-        def color_panel(self, color_type: str, color: Color):
+        def colour_panel(self, colour_type: str, colour: Colour):
             """
-            Panel with Colored area and label
+            Panel with Coloured area and label
 
             Args:
-                color_type: Type of color being painted
-                color: The Color
+                colour_type: Type of colour being painted
+                colour: The Colour
             """
             rgba = Gdk.RGBA()
-            rgba.parse(f'rgba{color.rgba}')
+            rgba.parse(f'rgba{colour.rgba}')
 
             vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
             button = Gtk.Button(expand=True)
-            label = Gtk.Label(label=color_type, expand=False)
+            label = Gtk.Label(label=colour_type, expand=False)
 
-            color_area = Gtk.DrawingArea()
-            color_area.connect("draw", self.on_draw, {"color": rgba})
+            colour_area = Gtk.DrawingArea()
+            colour_area.connect("draw", self.on_draw, {"colour": rgba})
 
-            button.add(color_area)
+            button.add(colour_area)
 
-            button.connect('clicked', self.on_click, color_type, color)
+            button.connect('clicked', self.on_click, colour_type, colour)
             vbox.pack_start(button, True, True, 0)
             vbox.pack_end(label, False, False, 0)
 
@@ -269,13 +269,13 @@ def gui(color: Color):
 
             return vbox
 
-        def put_colors(self, grid: Gtk.Grid):
-            """Place All 4 colors on the UI grid"""
-            original_box = self.color_panel('Original', color=self.color)
-            invert_box = self.color_panel('Invert', color=self.color.invert)
-            shade_box = self.color_panel('Shade', color=self.color.shade)
-            ishade_box = self.color_panel('Shade Invert',
-                                          color=self.color.shade.invert)
+        def put_colours(self, grid: Gtk.Grid):
+            """Place All 4 colours on the UI grid"""
+            original_box = self.colour_panel('Original', colour=self.colour)
+            invert_box = self.colour_panel('Invert', colour=self.colour.invert)
+            shade_box = self.colour_panel('Shade', colour=self.colour.shade)
+            ishade_box = self.colour_panel('Shade Invert',
+                                           colour=self.colour.shade.invert)
             grid.attach(original_box, 0, 0, 1, 1)
             grid.attach(invert_box, 1, 0, 1, 1)
             grid.attach(shade_box, 0, 1, 1, 1)
@@ -288,18 +288,18 @@ def gui(color: Color):
             height = widget.get_allocated_height()
             Gtk.render_background(context, cr, 0, 0, width, height)
 
-            r, g, b, a = data["color"]
+            r, g, b, a = data["colour"]
             cr.set_source_rgba(r, g, b, a)
             cr.rectangle(0, 0, width, height)
             cr.fill()
 
-        def on_click(self, _, color_type, color):
+        def on_click(self, _, colour_type, colour):
             cb = Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD)
-            cb.set_text(color.hex, -1)
+            cb.set_text(colour.hex, -1)
             cb.store()
-            print(f'{color_type}:', color.hex)
+            print(f'{colour_type}:', colour.hex)
 
-    display = ColorUI(color)
+    display = ColourUI(colour)
     display.show()
     Gtk.main()
 
@@ -307,15 +307,15 @@ def gui(color: Color):
 def main():
     """Main routine call."""
     input_args = cli()
-    color = Color(input_args['color'])
+    colour = Colour(input_args['colour'])
     if input_args['gtk']:
         try:
-            gui(color)
+            gui(colour)
         except Exception as err:
-            print_colors(color)
-            raise ColorInvertError('Error displaying GTK window') from err
+            print_colours(colour)
+            raise ColourInvertError('Error displaying GTK window') from err
     else:
-        print_colors(color)
+        print_colours(colour)
 
 
 if __name__ == "__main__":
