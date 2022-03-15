@@ -23,6 +23,7 @@
 
 # This must be run strictly as root
 
+# shellcheck disable=SC1091
 . "$(dirname "${0}")/common.sh" || exit 127
 
 set_vars() {
@@ -48,12 +49,13 @@ set_vars() {
     Clear cache by passing '3' to ${rok}/proc/sys/vm/drop_caches${dod}
     After confirmation, ${rok}super-user${dod} privileges will be requested.
 
-    Optional Arguements:
+    Optional Arguments:
     -h\t\t\tprint usage message and exit
     --help\t\tprint this help message and exit
     -y|--assumeyes\tdon't prompt, assume yes to all
     -n|--assumeno\tdon't prompt, assume no to all
     "
+    load_default_config || true
 }
 
 

@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2022-01-06 Thu 11:26 -->
+<!-- 2022-03-15 Tue 13:02 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Prady_sh_scripts</title>
@@ -232,6 +232,23 @@
 <li><a href="#org634dcdb">Copyright</a></li>
 <li><a href="#org549a889">License (GNU GPLv3)</a></li>
 <li><a href="#org6740088">Scope</a></li>
+<li><a href="#org6f11fb3">Configuration</a>
+<ul>
+<li><a href="#org910517f">clear_cache</a></li>
+<li><a href="#orgd65725f">countdown</a></li>
+<li><a href="#org3ba6483">gen_self_ssl_cert</a></li>
+<li><a href="#orgb63aff6">get_pass</a></li>
+<li><a href="#org5b0cae9">git_migrate</a></li>
+<li><a href="#orgcbd87d1">mvlns</a></li>
+<li><a href="#orged52c6d">openvpn</a></li>
+<li><a href="#org24c397a">relink</a></li>
+<li><a href="#org11426a4">runAs</a></li>
+<li><a href="#org9ebb556">scan_network_upnodes</a></li>
+<li><a href="#org7d837b4">snatch_own</a></li>
+<li><a href="#org0c98a86">sync_gitlab_issues</a></li>
+<li><a href="#orga9c8743">update_date</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
@@ -278,6 +295,193 @@ along with Prady_sh_scripts.  If not, see <a href="https://www.gnu.org/licenses/
 Files in this project contain regular utilities and aliases for linux (fc35);
 Preferably in POSIX-compliant shell scripts.
 </p>
+</div>
+</div>
+
+<div id="outline-container-org6f11fb3" class="outline-2">
+<h2 id="org6f11fb3">Configuration</h2>
+<div class="outline-text-2" id="text-org6f11fb3">
+<p>
+Variable values may be set manually in <code>${XDG_CONFIG_HOME:-${HOME/.config}}/sh_scripts/config.sh</code>.
+A variable named <code>&lt;var&gt;</code> for as script <code>&lt;script&gt;</code> can be set by declaring <code>&lt;script&gt;_&lt;var&gt;=&lt;value&gt;</code>.
+It will be interpreted as <code>&lt;var&gt;=&lt;value&gt;</code> only by <b>that</b> script, ignoring all other variables.
+</p>
+<div class="org-src-container">
+<pre class="src src-sh"><span style="color: #3f4f5f; background-color: #0f0f0f;"># </span><span style="color: #3f4f5f; background-color: #0f0f0f;">shellcheck disable=SC2034</span>
+<span style="color: #ffffaf;">countdown_progress</span>=true
+</pre>
+</div>
+
+<p>
+Following variables may be set for the corresponding script.
+</p>
+
+<div class="warning" id="orgd41c3bc">
+<p>
+It may not be wise to configure some of them globally.
+</p>
+
+</div>
+</div>
+
+<div id="outline-container-org910517f" class="outline-3">
+<h3 id="org910517f"><a href="../clear_cache.sh">clear_cache</a></h3>
+<div class="outline-text-3" id="text-org910517f">
+<ul class="org-ul">
+<li>clear_cache_confirmed: <i>bool</i></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgd65725f" class="outline-3">
+<h3 id="orgd65725f"><a href="../countdown.sh">countdown</a></h3>
+<div class="outline-text-3" id="text-orgd65725f">
+<ul class="org-ul">
+<li>countdown_colors: <i>bool</i></li>
+<li>countdown_resolution: <i>int</i></li>
+<li>countdown_notify: <i>bool</i></li>
+<li>countdown_progress: <i>bool</i></li>
+<li>countdown_period: <i>datatime</i></li>
+<li>countdown_as_time: <i>bool</i></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org3ba6483" class="outline-3">
+<h3 id="org3ba6483"><a href="../gen_self_ssl_cert.sh">gen_self_ssl_cert</a></h3>
+<div class="outline-text-3" id="text-org3ba6483">
+<ul class="org-ul">
+<li>gen_self_ssl_cert_conf: <i>path</i></li>
+<li>gen_self_ssl_cert_ssl_root: <i>path</i></li>
+<li>gen_self_ssl_cert_keyname: <i>str</i></li>
+<li>gen_self_ssl_cert_validity: <i>int</i></li>
+<li>gen_self_ssl_cert_create_conf: <i>bool</i></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgb63aff6" class="outline-3">
+<h3 id="orgb63aff6"><a href="../get_pass.sh">get_pass</a></h3>
+<div class="outline-text-3" id="text-orgb63aff6">
+<ul class="org-ul">
+<li>get_pass_instance: <i>str</i></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org5b0cae9" class="outline-3">
+<h3 id="org5b0cae9"><a href="../git_migrate.sh">git_migrate</a></h3>
+<div class="outline-text-3" id="text-org5b0cae9">
+<ul class="org-ul">
+<li>git_migrate_conf: <i>path</i></li>
+<li>git_migrate_task: <i>str</i></li>
+<li>git_migrate_rroot: <i>path</i></li>
+<li>git_migrate_stale: <i>url</i> | <i>path</i></li>
+<li>git_migrate_rnew: <i>url</i> | <i>path</i></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgcbd87d1" class="outline-3">
+<h3 id="orgcbd87d1"><a href="../mvlns.sh">mvlns</a></h3>
+<div class="outline-text-3" id="text-orgcbd87d1">
+<ul class="org-ul">
+<li>mvlns_verbose:  <i>bool</i></li>
+<li>mvlns_srcdir: <i>path</i></li>
+<li>mvlns_object: <i>path</i></li>
+<li>mvlns_destin: <i>path</i></li>
+<li>mvlns_mk_par: <i>bool</i></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orged52c6d" class="outline-3">
+<h3 id="orged52c6d"><a href="../openvpn.sh">openvpn</a></h3>
+<div class="outline-text-3" id="text-orged52c6d">
+<ul class="org-ul">
+<li>openvpn_remote_targets: <i>str</i> (addresses separated by <code>space</code>)</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org24c397a" class="outline-3">
+<h3 id="org24c397a"><a href="../relink.sh">relink</a></h3>
+<div class="outline-text-3" id="text-org24c397a">
+<ul class="org-ul">
+<li>relink_verbose: <i>bool</i></li>
+<li>relink_link_dir: <i>path</i></li>
+<li>relink_mod_pat: <i>glob</i></li>
+<li>relink_new_str:  <i>str</i></li>
+<li>relink_mock: <i>bool</i></li>
+<li>relink_safe: <i>bool</i></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org11426a4" class="outline-3">
+<h3 id="org11426a4"><a href="../runAs.sh">runAs</a></h3>
+<div class="outline-text-3" id="text-org11426a4">
+<ul class="org-ul">
+<li>runAs_otherUser: <i>str</i></li>
+<li>runAs_otherIP: <i>url</i></li>
+<li>runAs_execCmd: <i>str</i></li>
+<li>runAs_posStr: <i>str</i></li>
+<li>runAs_titleStr: <i>str</i></li>
+<li>runAs_interactive: <i>bool</i></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org9ebb556" class="outline-3">
+<h3 id="org9ebb556"><a href="../scan_network_upnodes.sh">scan_network_upnodes</a></h3>
+<div class="outline-text-3" id="text-org9ebb556">
+<ul class="org-ul">
+<li>scan_network_upnodes_ip_range: <i>int</i></li>
+<li>scan_network_upnodes_startip: <i>int</i></li>
+<li>scan_network_upnodes_stopip: <i>int</i></li>
+<li>scan_network_upnodes_down: <i>bool</i></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org7d837b4" class="outline-3">
+<h3 id="org7d837b4"><a href="../snatch_own.sh">snatch_own</a></h3>
+<div class="outline-text-3" id="text-org7d837b4">
+<ul class="org-ul">
+<li>snatch_own_verbose: <i>bool</i></li>
+<li>snatch_own_robber: <i>str</i></li>
+<li>snatch_own_syndicate: <i>str</i></li>
+<li>snatch_own_recurse: <i>bool</i></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org0c98a86" class="outline-3">
+<h3 id="org0c98a86"><a href="../sync_gitlab_issues.sh">sync_gitlab_issues</a></h3>
+<div class="outline-text-3" id="text-org0c98a86">
+<ul class="org-ul">
+<li>sync_gitlab_issues_verbose: <i>bool</i></li>
+<li>sync_gitlab_issues_very_verbose: <i>bool</i></li>
+<li>sync_gitlab_issues_config_file: <i>path</i></li>
+<li>sync_gitlab_issues_pull: <i>bool</i></li>
+<li>sync_gitlab_issues_block: <i>str</i></li>
+<li>sync_gitlab_issues_local_url: <i>path</i></li>
+<li>sync_gitlab_issues_local_token: <i>str</i></li>
+<li>sync_gitlab_issues_remote_url: <i>url</i></li>
+<li>sync_gitlab_issues_remote_token: <i>str</i></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orga9c8743" class="outline-3">
+<h3 id="orga9c8743"><a href="../update_date.sh">update_date</a></h3>
+<div class="outline-text-3" id="text-orga9c8743">
+<ul class="org-ul">
+<li>update_date_set_time: <i>bool</i></li>
+<li>update_date_current_time: <i>str</i></li>
+<li>update_date_source: <i>url</i></li>
+</ul>
+</div>
 </div>
 </div>
 </div>

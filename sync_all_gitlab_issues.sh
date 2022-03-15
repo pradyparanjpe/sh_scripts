@@ -24,8 +24,8 @@
 # This must be run strictly as root
 
 
+# shellcheck disable=SC1091
 . "$(dirname "${0}")/common.sh" || exit 127
-
 
 set_vars() {
     rok="\033[0;31;40m"  # red on black
@@ -57,7 +57,7 @@ set_vars() {
     ${bok}https://pypi.org/project/gitlab-issues-sync/${dod}
 
 
-    Help Arguements:
+    Help Arguments:
     -h\t\t\t\tprint usage message and exit
     --help\t\t\tprint this help message and exit
 
@@ -84,6 +84,7 @@ set_vars() {
     \t    ${gok}# inline comments \033[1;32;40mWILL${gok} pollute value${dod}
     \t    ${gok}# yaml indentation: 2 spaces${dod}
 "
+    load_default_config || true
 }
 
 unset_vars() {

@@ -21,6 +21,7 @@
 # This serves as a helper script for providing secrets
 
 
+# shellcheck disable=SC1091
 . "$(dirname "${0}")/common.sh" || exit 127
 
 
@@ -46,6 +47,7 @@ set_vars () {
     Optional Positional Argument:
     INSTANCE\tfetch password from password store for INSTANCE
 "
+    load_default_config || true
 }
 
 unset_vars() {

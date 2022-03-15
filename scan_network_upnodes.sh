@@ -22,6 +22,7 @@
 # Scan Up Nodes
 
 
+# shellcheck disable=SC1091
 . "$(dirname "${0}")/common.sh" || exit 127
 
 
@@ -48,6 +49,7 @@ set_vars() {
     --help\tPrint this help message and exit
     -d|--down\tPrint 'down' IPs as !down!
 "
+    load_default_config || true
 }
 
 unset_vars() {

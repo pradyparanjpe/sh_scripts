@@ -21,6 +21,7 @@
 
 # retreive, display and/or set current time
 
+# shellcheck disable=SC1091
 . "$(dirname "${0}")/common.sh" || exit 127
 
 set_vars() {
@@ -38,7 +39,7 @@ DESCRIPTION:
     Further, \033[0;31;40msuper-user\033[m privilege is requested to set time.
     This is especially useful from behind a proxy server.
 
-Optional Arguements:
+Optional Arguments:
     -h\t\t\t\tPrint usage message and exit
     --help\t\t\tPrint this help message and exit
     -s|--set-time\t\tSet time [default: offer interactively]
@@ -48,6 +49,7 @@ Optional Arguements:
 
 Optional Positional Argument:
     SOURCE\t\t\tsource domain [default: \033[0;32;40m${source}\033[m]"
+    load_default_config || true
 }
 
 unset_vars() {

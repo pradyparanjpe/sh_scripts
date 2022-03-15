@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
-# -*- coding:utf-8 -*-
+# -*- coding:utf-8; mode: shell-script -*-
 #
 # Copyright 2020-2021-2022 Pradyumna Paranjape
 #
@@ -22,6 +22,7 @@
 # countdown timer
 
 
+# shellcheck disable=SC1091
 . "$(dirname "${0}")/common.sh" || exit 127
 
 set_vars () {
@@ -33,16 +34,17 @@ set_vars () {
     bgob="\033[92;40m"
     gob="\033[1;32;40m"
     hltime="\033[m"
-    colors=1
+    colors=true
     resolution=1
-    progress=
+    notify=false
+    progress=false
     period=
-    as_time=
+    as_time=false
     usage="
     usage:
     ${0} -h
     ${0} --help
-    ${0} [-p|progress] [-u N|--update N] [-t|--time] PERIOD
+    ${0} [-p|progress] [-n|--notify] [-u N|--update N] [-t|--time] PERIOD
 "
     help_msg="${usage}
 
@@ -53,6 +55,7 @@ set_vars () {
     -h\t\t\tPrint command usage guide and exit
     --help\t\tPrint this detailed message and exit
     -b|--bland\t\tPrint bland (without colours) output
+    -n|--notify\t\tSend desktop notification
     -p|--progress\tShow progress bar
     -t|--time\t\tTreat the positional argument as target time
     -u N|--update N\tUpdate every N seconds
@@ -61,6 +64,7 @@ set_vars () {
     PERIOD\t\tPeriod in seconds to count down.
     \t\t\t[This is parsed using \033[0;31m$(which date)\033[m]
     "
+    load_default_config || true
 }
 
 unset_vars () {
@@ -72,6 +76,7 @@ unset_vars () {
     unset rob
     unset gob
     unset colors
+    unset notify
     unset resolution
     unset progress
     unset period
@@ -91,11 +96,15 @@ cli () {
                 clean_exit 0 "${help_msg}"
                 ;;
             -b|--bland)
-                unset colors
+                colors=false
+                shift
+                ;;
+            -n|--notify)
+                notify=true
                 shift
                 ;;
             -p|--progress)
-                progress=1
+                progress=true
                 shift
                 ;;
             -u|--update)
@@ -104,7 +113,7 @@ cli () {
                 shift
                 ;;
             -t|--time)
-                as_time=1
+                as_time=true
                 shift
                 ;;
             *)
@@ -128,30 +137,29 @@ get_period () {
 }
 
 color_hl () {
-        if [ "${1}" -lt 600 ]; then  # 10 minutes
-            if [ "${1}" -lt 60 ]; then  # 1 minute
-                if [ "${1}" -lt 10 ]; then  # 10 seconds
-                    if [ "${1}" -lt 5 ]; then  # 5 seconds
-                        hltime="${brob}"
-                    else
-                        hltime="${rob}"
-                    fi
-                    resolution=1
+    if [ "${1}" -lt 600 ]; then  # 10 minutes
+        if [ "${1}" -lt 60 ]; then  # 1 minute
+            if [ "${1}" -lt 10 ]; then  # 10 seconds
+                if [ "${1}" -lt 5 ]; then  # 5 seconds
+                    hltime="${brob}"
                 else
-                    hltime="${yob}"
+                    hltime="${rob}"
                 fi
             else
-                hltime="${byob}"
-            fi
-        elif [ "${1}" -ge 3600 ]; then  # more than 1 hour
-            if [ "${1}" -ge 86400 ]; then   # more than 1 day
-                hltime="${bgob}"
-            else
-                hltime="${gob}"
+                hltime="${yob}"
             fi
         else
-            hltime="\033[m"
+            hltime="${byob}"
         fi
+    elif [ "${1}" -ge 3600 ]; then  # more than 1 hour
+        if [ "${1}" -ge 86400 ]; then   # more than 1 day
+            hltime="${bgob}"
+        else
+            hltime="${gob}"
+        fi
+    else
+        hltime="\033[m"
+    fi
 }
 
 disp_count () {
@@ -160,43 +168,43 @@ disp_count () {
         clean_exit 1 "We don't have a time-machine"
     fi
     max_period="${period}"
-    # shellcheck disable=SC2086
+    if [ "$(( resolution * 2 ))" -gt "${period}" ]; then
+        resolution=1
+    fi
     while [ "$period" -gt 0 ]; do
-        period=$((period - resolution))
-        if [ ${period} -le 0 ]; then
-            resolution=$((period + resolution))
-        fi
-        if [ -n "$colors" ]; then
+        if ${colors}; then
             color_hl "${period}"
-            printf "${hltime}%21s seconds" "$((period + resolution))"
+            printf "${hltime}%21s seconds " "${period}"
         else
-            printf "%21s seconds" "$((period + resolution))"
+            printf "%21s seconds " "${period}"
         fi
-        bar_len=$((period*max_bar/max_period))
-        if [ -n "${progress}" ]; then
-            printf " "
+        if ${progress}; then
+            bar_len=$(( period * max_bar / max_period ))
+            blank_len=$(( max_bar - bar_len ))
             printf "%${bar_len}s" | tr " " "_"
-            printf "%$((max_bar-bar_len))s"
+            printf "%${blank_len}s"
         fi
+        printf "\r"
         sleep "${resolution}"
-        # shellcheck disable=SC2059
-        if [ -n "${progress}" ]; then
-            # shellcheck disable=SC2059
-            printf "$( printf "%$((max_bar+30))s" " " | tr " " "\b" )"
-        else
-            printf "$( printf "%29s" " " | tr " " "\b" )"
+        period=$(( period - resolution ))
+        if [ "$(( resolution * 2 ))" -gt "${period}" ]; then
+            resolution=1
         fi
     done
     printf "\033[m\a"
+    if ${notify} && [ -n "${DISPLAY}" ]; then
+        notify-send "Countdown ${max_period} seconds"
+    fi
     unset max_period
     unset bar_len
+    unset blank_len
 }
 
 main() {
-    check_dependencies "date"
+    check_dependencies "date" "tr"
     set_vars
     cli "$@"
-    if [ -n "${as_time}" ]; then
+    if ${as_time}; then
         get_period "${period}"
     fi
     disp_count "${period}"

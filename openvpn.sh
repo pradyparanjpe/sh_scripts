@@ -20,6 +20,7 @@
 #
 
 
+# shellcheck disable=SC1091
 . "$(dirname "${0}")/common.sh" || exit 127
 
 
@@ -35,6 +36,7 @@ set_vars() {
     Connect to openvpn server with credentials
     "
     remote_targets="192.168.1.104"
+    load_default_config || true
 }
 
 unset_vars() {

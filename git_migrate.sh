@@ -20,6 +20,7 @@
 # Files in this project contain regular utilities and aliases for linux (fc34)
 
 
+# shellcheck disable=SC1091
 . "$(dirname "${0}")/common.sh" || exit 127
 
 
@@ -63,6 +64,7 @@ set_vars() {
         myrepo2
 
     "
+    load_default_config || true
 
 }
 

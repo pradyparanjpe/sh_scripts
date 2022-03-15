@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # -*- coding: utf-8; mode: shell-script; -*-
 #
-# Copyright 2021 Pradyumna Paranjape
+# Copyright 2021, 2022 Pradyumna Paranjape
 #
 # This file is part of Prady_sh_scripts.
 # Prady_sh_scripts is free software: you can redistribute it and/or modify
@@ -20,10 +20,19 @@
 # Files in this project contain regular utilities and aliases for linux (fc34)
 
 
+# shellcheck disable=SC1091
 . "$(dirname "${0}")/common.sh" || exit 5
 
 
 set_vars() {
+    link_dir=
+    mod_pat=
+    new_str=
+    verbose=
+    mock=true
+    safe=false
+    lstars=
+    lslinks=
     usage="
     ${0} -h
     ${0} --help
@@ -51,14 +60,7 @@ set_vars() {
     -m|--mock\t\tDo not perform action, only mock (assumes verbose)
     -v|--verbose\tDisplay verbose outputs
     "
-    link_dir=
-    mod_pat=
-    new_str=
-    verbose=
-    mock=true
-    safe=false
-    lstars=
-    lslinks=
+    load_default_config || true
 }
 
 
