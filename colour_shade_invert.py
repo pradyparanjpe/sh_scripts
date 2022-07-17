@@ -31,6 +31,7 @@ from typing import Dict, List, Sequence, Tuple, Union
 
 class ColourInvertError(Exception):
     """Base Error"""
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -51,6 +52,7 @@ class Colour():
         space: int: colour space (15 or 255)
 
     """
+
     def __init__(self, colour: Union[str, Sequence[int]], space: int = None):
         if isinstance(colour, str):
             try:
@@ -227,6 +229,7 @@ def gui(colour: Colour):
 
     class ColourUI(Gtk.Window):
         """User interface displaying all transformed colours."""
+
         def __init__(self, colour: Colour):
             self.colour = colour
             super().__init__()

@@ -24,18 +24,22 @@
 
 
 clean_exit() {
+    # $1: exit command
+    # $2: stderr
     if [ -n "${1}" ] && [ "${1}" -ne "0" ]; then
         if [ -n "${2}" ]; then
             # shellcheck disable=SC2059
             printf "${2}\n" >&2
         fi
         # shellcheck disable=SC2086
-        exit ${1}
+        unset_vars
+        exit "${1}"
     fi
     if [ -n "${2}" ]; then
         # shellcheck disable=SC2059
         printf "${2}\n"
     fi
+    unset_vars
     exit 0
 }
 
@@ -78,12 +82,17 @@ posix_rename() {
     printf "%s" "${target}"
 }
 
+posix_var_expand() {
+    eval printf "\"\$${1}\""
+}
+
 
 load_default_config() {
     # load default settings from XDG_CONFIG_HOME/sh_scripts/config.sh
     var_before="$(mktemp)"
 
     set > "${var_before}"
+    # shellcheck disable=SC1091
     if [ -f "${XDG_CONFIG_HOME:-${HOME}/.config}/sh_scripts/config.sh" ]; then
         . "${XDG_CONFIG_HOME:-${HOME}/.config}/sh_scripts/config.sh" || return
     else
