@@ -27,13 +27,15 @@
 
 
 set_vars() {
+    ports=
     ip_range=0
     startip=2
     stopip=254
     down=false
-    usage="
-    usage:
-    $0 IPRANGE STARTIP STOPIP"
+    usage="usage:
+    $0 -h
+    $0 --help
+    $0 [options] IPRANGE STARTIP STOPIP"
     help_msg="${usage}
 
     DESCRIPTION:
@@ -45,14 +47,16 @@ set_vars() {
     STOPIP\tlast node to scan [default=${stopip}]
 
     Optional Arguments:
-    -h\t\tPrint usage and exit
-    --help\tPrint this help message and exit
-    -d|--down\tPrint 'down' IPs as !down!
+    -h\t\t\tPrint usage and exit
+    --help\t\tPrint this help message and exit
+    -d|--down\t\tPrint 'down' IPs as !down!
+    -p PORT|--port PORT\tScan these ports (passed to nmap)
 "
     load_default_config || true
 }
 
 unset_vars() {
+    unset ports
     unset ip_range
     unset startip
     unset stopip
@@ -73,6 +77,16 @@ cli () {
             --help)
                 unset pos
                 clean_exit 0 "${help_msg}"
+                ;;
+
+            -p|--port|-p=*|--port=*)
+                if [ ! "${1#*=}" = "${1}" ]; then
+                    ports="$(printf "%s" "$1" | cut -d "=" -f 2)"
+                else
+                    shift
+                    ports="${1}"
+                fi
+                shift
                 ;;
             -d|--down)
                 down=true
@@ -122,6 +136,19 @@ EOF
     unset pos
 }
 
+scanport() {
+    if [ -z "${ports}" ] || [ -z "${1}" ]; then
+        return
+    fi
+    printf "Scanning UP machines for ports: %s\n" "${ports}"
+    for mach in ${1}; do
+        printf "Scanning %s\n" "${mach}"
+        nmap -p "${ports}" "${mach}"
+    done
+    unset mach
+    unset portnum
+}
+
 scan () {
     printf "Scanning 192.168.%s.%s to 192.168.%s.%s\n" "${ip_range}" \
            "${startip}" "${ip_range}" "${stopip}"
@@ -131,15 +158,20 @@ scan () {
     fi
     printf ""
 
+    ip_up=
     for testip in $(seq "$startip" "$stopip"); do
-        isdown="$(ping -c 1 "192.168.${ip_range}.${testip}" -w 1 -q)";
+        target_ip="192.168.${ip_range}.${testip}"
+        isdown="$(ping -c 1 "${target_ip}" -w 1 -q)";
         if [ "${isdown#*100}" = "${isdown}" ]; then
             printf "%s\t" "${testip}";
+            ip_up="${ip_up} ${target_ip}"
         elif ${down}; then
             printf "!%s!\t" "${testip}";
         fi;
     done;
     printf "\n"
+    scanport "${ip_up}"
+    unset ip_up
 }
 
 main() {
