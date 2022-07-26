@@ -37,14 +37,19 @@ set_cmds() {
     dnf_cmd="sudo su -l -c \"dnf --refresh -y update\""
     # shellcheck disable=SC2034
 
+    # shellcheck disable=SC2154
+    # shellcheck disable=SC2034
+    clamav_cmd="sudo su -l -c \"all_proxy=\${all_proxy} freshclam\""
+
     cargo_cmd="cargo-install-update install-update --all && cargo-cache -a"
     # use pspman rather (when fixed)
     # shellcheck disable=SC2034
 
-    spacemacs_cmd="cd \"\${XDG_DATA_HOME:-\${HOME}/.local/share}\
-/pspman/src/spacemacs/\" \
-&& git pull \
-&& cd - || cd -"
+    spacemacs_cmd="git -C \"\${XDG_DATA_HOME:-\${HOME}/.local/share}\
+/pspman/src/spacemacs/\" pull"
+
+    # shellcheck disable=SC2034
+    nvim_cmd="nvim +CocUpdate +PlugUpdate"
 
     # shellcheck disable=SC2034
     emacs_cmd="emacs \
@@ -53,14 +58,7 @@ set_cmds() {
 --eval=\"(configuration-layer/update-packages t)\" \
 --kill"
 
-    # shellcheck disable=SC2034
-    nvim_cmd="nvim +CocUpdate +PlugUpdate"
-
-    # shellcheck disable=SC2154
-    # shellcheck disable=SC2034
-    clamav_cmd="sudo su -l -c \"all_proxy=\${all_proxy} freshclam\""
-
-    all_cmds="dnf_cmd clamav_cmd cargo_cmd spacemacs_cmd emacs_cmd nvim_cmd"
+    all_cmds="dnf_cmd clamav_cmd cargo_cmd spacemacs_cmd nvim_cmd emacs_cmd"
 }
 
 set_vars() {
@@ -109,6 +107,7 @@ exec_str () {
     # $1: cmd_var
     cmd="$(posix_var_expand "${1}")"
     # shellcheck disable=SC2086
+    printf "\n\n\n%s\n\n" "${cmd}"
     eval ${cmd} || clean_exit 127 "${1} Updates Failed."
 }
 
