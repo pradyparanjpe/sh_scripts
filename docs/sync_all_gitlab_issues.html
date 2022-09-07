@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2022-09-07 Wed 19:28 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>sync_all_gitlab_issues</title>
+<meta name="author" content="Pradyumna Paranjape" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="https://fniessen.github.io/org-html-themes/src/readtheorg_theme/css/htmlize.css"/>
+<link rel="stylesheet" type="text/css" href="https://fniessen.github.io/org-html-themes/src/readtheorg_theme/css/readtheorg.css"/>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="https://fniessen.github.io/org-html-themes/src/lib/js/jquery.stickytableheaders.min.js"></script>
+<script type="text/javascript" src="https://fniessen.github.io/org-html-themes/src/readtheorg_theme/js/readtheorg.js"></script>
+</head>
+<body>
+<div id="content" class="content">
+<h1 class="title">sync_all_gitlab_issues</h1>
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#org13f6681">NAME</a></li>
+<li><a href="#orgcd409cc">SYNOPSIS</a></li>
+<li><a href="#org144d1a4">DESCRIPTION</a>
+<ul>
+<li><a href="#orgb67bed7">Optional Arguments</a></li>
+<li><a href="#orgf10c832">Positional Arguments</a></li>
+</ul>
+</li>
+<li><a href="#org747f81c">FILES</a></li>
+</ul>
+</div>
+</div>
+
+
+<div id="outline-container-org13f6681" class="outline-2">
+<h2 id="org13f6681">NAME</h2>
+<div class="outline-text-2" id="text-org13f6681">
+<p>
+sync_all_gitlab_issues - Synchronize issues for all gitlab projects.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgcd409cc" class="outline-2">
+<h2 id="orgcd409cc">SYNOPSIS</h2>
+<div class="outline-text-2" id="text-orgcd409cc">
+<p>
+sync_all_gitlab_issues [-h]
+</p>
+
+<p>
+sync_all_gitlab_issues [&#x2013;help]
+</p>
+
+<p>
+sync_all_gitlab_issues [[*Optional Arguments] &#x2026;] CONFIG_YAML
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-org144d1a4" class="outline-2">
+<h2 id="org144d1a4">DESCRIPTION</h2>
+<div class="outline-text-2" id="text-org144d1a4">
+<p>
+Synchronize issues for all gitlab projects.
+</p>
+
+<p>
+A multi-wrapper for <a href="https://pypi.org/project/gitlab-issues-sync/">https://pypi.org/project/gitlab-issues-sync/</a>
+</p>
+</div>
+
+<div id="outline-container-orgb67bed7" class="outline-3">
+<h3 id="orgb67bed7">Optional Arguments</h3>
+<div class="outline-text-3" id="text-orgb67bed7">
+<p>
+-h                          print usage message and exit
+</p>
+
+<p>
+&#x2013;help                      print this help message and exit
+</p>
+
+<p>
+-f|&#x2013;pull                   Copy from remote to local in config file (default: push)
+</p>
+
+<p>
+-v|&#x2013;verbose                Print information inferred from configuration file
+</p>
+
+<p>
+-V|&#x2013;very-verbose           Print secrets in information (assumes -v)
+</p>
+
+<p>
+-b BLOCK|&#x2013;block BLOCK      Sync BLOCK from config file {default: 'default'}
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgf10c832" class="outline-3">
+<h3 id="orgf10c832">Positional Arguments</h3>
+<div class="outline-text-3" id="text-orgf10c832">
+<p>
+CONFIG_YAML                 Yaml file with configuration as described below
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org747f81c" class="outline-2">
+<h2 id="org747f81c">FILES</h2>
+<div class="outline-text-2" id="text-org747f81c">
+<p>
+Configuration file (yaml format) should contain following structure.
+Yaml indent: 2 spaces.
+</p>
+<div class="org-src-container">
+<pre class="src src-yaml"><span style="color: #ffffaf;">BLOCK</span>:
+  <span style="color: #ffffaf;">local</span>:
+    <span style="color: #ffffaf;">url</span>: https://gitlab.com
+    <span style="color: #ffffaf;">token</span>: &lt;secret-token&gt;
+    <span style="color: #ffffaf;">projects</span>: 11 12 13
+  <span style="color: #ffffaf;">remote</span>:
+    <span style="color: #ffffaf;">url</span>: https://www.example.com
+    <span style="color: #ffffaf;">token</span>: &lt;secret-token&gt;
+    <span style="color: #ffffaf;">projects</span>: 101 102 103
+  <span style="color: #3f4f5f; background-color: #0f0f0f;"># </span><span style="color: #3f4f5f; background-color: #0f0f0f;">comment</span>
+  <span style="color: #3f4f5f; background-color: #0f0f0f;"># </span><span style="color: #3f4f5f; background-color: #0f0f0f;">inline comments WILL pollute value</span>
+  <span style="color: #3f4f5f; background-color: #0f0f0f;"># </span><span style="color: #3f4f5f; background-color: #0f0f0f;">yaml indentation: 2 spaces</span>
+
+</pre>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

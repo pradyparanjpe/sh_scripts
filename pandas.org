@@ -1,0 +1,117 @@
+# -*- mode:org; coding: utf-8; -*-
+#+TITLE: pandas
+#+AUTHOR: Pradyumna Paranjape
+#+EMAIL: pradyparanjpe@rediffmail.com
+#+LANGUAGE: en
+#+OPTIONS: toc:2 num:nil html-postamble:nil ^:nil mathjax:t TeX:t ::t tags:nil *:t skip:t
+#+PROPERTY: header-args  :tangle pss/bin/pandas :exports none
+#+SETUPFILE: https://fniessen.github.io/org-html-themes/org/theme-readtheorg.setup
+#+EXPORT_FILE_NAME: docs/pandas.html
+
+* NAME
+pandas - launch (i)python with pandas pre-imported
+
+* SYNOPSIS
+pandas -h
+
+pandas --help
+
+pandas
+
+* DESCRIPTION
+Launch python interpreter (ipython if available) with pandas already imported.
+
+** Optional Arguments:
+-h			Print command usage guide and exit
+
+--help		Print this detailed message and exit
+
+* ENVIRONMENT
+** PYTHONSTARTUP
+The value (file-path) of *PYTHONSTARTUP*, if set, is preserved and set to
+a temporary file with additional import statements before
+interpreter is launched. After the interpreter exits,
+the preserved value is reset.
+
+* FILES
+A temporary file is used as *PYTHONSTARTUP*. If is removed after
+the interpreter exits.
+
+* SEE ALSO
+- launch_py
+- numpy
+
+#+begin_src sh :shebang #!/usr/bin/env sh
+  #!/usr/bin/env sh
+  # -*- coding: utf-8; mode: shell-script -*-
+  #
+  # Copyright 2021, 2022 Pradyumna Paranjape
+  # This file is part of Prady_sh_scripts.
+  #
+  # Prady_sh_scripts is free software: you can redistribute it and/or modify
+  # it under the terms of the GNU Lesser General Public License as published by
+  # the Free Software Foundation, either version 3 of the License, or
+  # (at your option) any later version.
+  #
+  # Prady_sh_scripts is distributed in the hope that it will be useful,
+  # but WITHOUT ANY WARRANTY; without even the implied warranty of
+  # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  # GNU Lesser General Public License for more details.
+  #
+  # You should have received a copy of the GNU Lesser General Public License
+  # along with Prady_sh_scripts. If not, see <https://www.gnu.org/licenses/>.
+
+
+  # Launch pandas-imported (i)python
+
+
+  # shellcheck disable=SC1091
+  . "$(dirname "${0}")/../lib/common" || exit 127
+  . "$(dirname "${0}")/../lib/py_mod_call" || exit 127
+
+
+  set_vars () {
+      usage="
+      usage:
+      ${0} -h
+      ${0} --help
+      ${0}
+  "
+  }
+
+  unset_vars () {
+      unset usage
+  }
+
+  cli () {
+      while [ $# -gt 0 ]; do
+          case "${1}" in
+              -h)
+                  # shellcheck disable=SC2059
+                  clean_exit 0 "${usage}"
+                  ;;
+              --help)
+                  # shellcheck disable=SC2059
+                  man pandas
+                  clean_exit 0
+                  ;;
+              ,*)
+                  shift
+                  ;;
+          esac
+      done
+  }
+
+
+  launch () {
+      mod_call psprint/print pandas:np pandas:pd
+      clean_exit $?
+  }
+
+  main () {
+      set_vars
+      cli "$@"
+      launch
+  }
+  main "$@"
+#+end_src

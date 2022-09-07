@@ -1,0 +1,65 @@
+# -*- mode:org; coding: utf-8; -*-
+#+TITLE: host_on_net
+#+AUTHOR: Pradyumna Paranjape
+#+EMAIL: pradyparanjpe@rediffmail.com
+#+LANGUAGE: en
+#+OPTIONS: toc:2 num:nil html-postamble:nil ^:nil mathjax:t TeX:t ::t tags:nil *:t skip:t
+#+PROPERTY: header-args  :tangle pss/bin/host_on_net :exports none
+#+SETUPFILE: https://fniessen.github.io/org-html-themes/org/theme-readtheorg.setup
+#+EXPORT_FILE_NAME: docs/host_on_net.html
+
+* NAME
+host_on_net - clear cache by passing '3' to =/proc/sys/vm/drop_caches=
+
+* SYNOPSIS
+USERNAME= BINDPORT=80 BINDHOST=serveo.net host_on_net
+
+* DESCRIPTION
+
+** Optional Arguments:
+
+* ENVIRONMENT
+** USERNAME
+Reverse bind username, default =${USER}=
+
+** BINDPORT
+Port to reverse bind, default: 80
+
+** BINDHOST
+Host to reverse bind, default: serveo.net
+
+* FILES
+- =${XDG_STATE_HOME:-${HOME}/.local/state}/${BINDHOST}.log= server logs
+- =${XDG_STATE_HOME:-${HOME}/.local/state}/${BINDHOST}.err= server errors
+
+#+begin_src sh :shebang #!/usr/bin/env sh
+  # -*- coding:utf-8 -*-
+  #
+  # Copyright 2020-2022 Pradyumna Paranjape
+  #
+  # This file is part of Prady_sh_scripts.
+  # Prady_sh_scripts is free software: you can redistribute it and/or modify
+  # it under the terms of the GNU General Public License as published by
+  # the Free Software Foundation, either version 3 of the License, or
+  # (at your option) any later version.
+  #
+  # Prady_sh_scripts is distributed in the hope that it will be useful,
+  # but WITHOUT ANY WARRANTY; without even the implied warranty of
+  # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  # GNU General Public License for more details.
+  #
+  # You should have received a copy of the GNU General Public License
+  # along with Prady_sh_scripts.  If not, see <https://www.gnu.org/licenses/>.
+  #
+  # Files in this project contain regular utilities and aliases for linux (fc34)
+
+  # Bind port 80 to net
+  # USERNAME is defined on environment
+  nohup \
+      ssh \
+      -R "${USERNAME:-${USER}}":"${BINDPORT:-80}":localhost:"${BINDPORT:-80}" \
+      "${BINDHOST:-serveo.net}" \
+      > "${XDG_STATE_HOME:-${HOME}/.local/state}/${BINDHOST:-serveo.net}.log" \
+      2>"${XDG_STATE_HOME:-${HOME}/.local/state}/${BINDHOST:-serveo.net}.err" \
+      & disown
+#+end_src

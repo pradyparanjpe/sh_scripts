@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2022-09-07 Wed 19:28 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>launch_py</title>
+<meta name="author" content="Pradyumna Paranjape" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="https://fniessen.github.io/org-html-themes/src/readtheorg_theme/css/htmlize.css"/>
+<link rel="stylesheet" type="text/css" href="https://fniessen.github.io/org-html-themes/src/readtheorg_theme/css/readtheorg.css"/>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="https://fniessen.github.io/org-html-themes/src/lib/js/jquery.stickytableheaders.min.js"></script>
+<script type="text/javascript" src="https://fniessen.github.io/org-html-themes/src/readtheorg_theme/js/readtheorg.js"></script>
+</head>
+<body>
+<div id="content" class="content">
+<h1 class="title">launch_py</h1>
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#org34b1b66">NAME</a></li>
+<li><a href="#orgc410cba">SYNOPSIS</a></li>
+<li><a href="#orgae783fe">DESCRIPTION</a>
+<ul>
+<li><a href="#org64bbc5f">Optional Arguments:</a></li>
+<li><a href="#orgeae512e">Positional Arguments:</a></li>
+<li><a href="#org97fa8cd">Module format:</a></li>
+</ul>
+</li>
+<li><a href="#orga2d8288">ENVIRONMENT</a>
+<ul>
+<li><a href="#org1e4a48b">PYTHONSTARTUP</a></li>
+</ul>
+</li>
+<li><a href="#org7cc750c">FILES</a></li>
+<li><a href="#org2b11f75">SEE ALSO</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org34b1b66" class="outline-2">
+<h2 id="org34b1b66">NAME</h2>
+<div class="outline-text-2" id="text-org34b1b66">
+<p>
+launch_py - launch (i)python with modules pre-imported
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgc410cba" class="outline-2">
+<h2 id="orgc410cba">SYNOPSIS</h2>
+<div class="outline-text-2" id="text-orgc410cba">
+<p>
+launch_py -h
+</p>
+
+<p>
+launch_py &#x2013;help
+</p>
+
+<p>
+launch_py [[module] &#x2026;]
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgae783fe" class="outline-2">
+<h2 id="orgae783fe">DESCRIPTION</h2>
+<div class="outline-text-2" id="text-orgae783fe">
+<p>
+Launch python interpreter (ipython if available) with
+some modules already imported. This is a callable wrapper that launches
+a <i>plastic</i> interpreter instance with <i>arbitrary</i> modules; typical use-cases are
+exemplified by <b>numpy</b>  and <b>pandas</b> scripts that call the wrapped function with
+<b>numpy</b> and/or <b>pandas</b> pre-imported respectively.
+</p>
+</div>
+
+<div id="outline-container-org64bbc5f" class="outline-3">
+<h3 id="org64bbc5f">Optional Arguments:</h3>
+<div class="outline-text-3" id="text-org64bbc5f">
+<p>
+-h			Print command usage guide and exit
+</p>
+
+<p>
+&#x2013;help		Print this detailed message and exit
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgeae512e" class="outline-3">
+<h3 id="orgeae512e">Positional Arguments:</h3>
+<div class="outline-text-3" id="text-orgeae512e">
+<p>
+module		Module(s) to import [format: see below]
+</p>
+</div>
+</div>
+
+<div id="outline-container-org97fa8cd" class="outline-3">
+<h3 id="org97fa8cd">Module format:</h3>
+<div class="outline-text-3" id="text-org97fa8cd">
+<p>
+[Package.][[subpackage.]&#x2026;]namespace[/object][:asvar]
+</p>
+</div>
+
+<div id="outline-container-org0a5063a" class="outline-4">
+<h4 id="org0a5063a">Examples:</h4>
+<div class="outline-text-4" id="text-org0a5063a">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Python Import</th>
+<th scope="col" class="org-left">Command Argument</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">import os</td>
+<td class="org-left">os</td>
+</tr>
+
+<tr>
+<td class="org-left">import scipy.stats</td>
+<td class="org-left">scipy.stats</td>
+</tr>
+
+<tr>
+<td class="org-left">import numpy as np</td>
+<td class="org-left">numpy:np</td>
+</tr>
+
+<tr>
+<td class="org-left">from pathlib import Path</td>
+<td class="org-left">pathlib/Path</td>
+</tr>
+
+<tr>
+<td class="org-left">from typing import List, Tuple</td>
+<td class="org-left">typing/List,Tuple</td>
+</tr>
+
+<tr>
+<td class="org-left">from Bio.SeqIO import parse</td>
+<td class="org-left">Bio.SeqIO/parse</td>
+</tr>
+
+<tr>
+<td class="org-left">from matplotlib import pyplot as plt</td>
+<td class="org-left">matplotlib/pyplot:plt</td>
+</tr>
+
+<tr>
+<td class="org-left">from Bio.AlignIO import parse as aparse</td>
+<td class="org-left">Bio.AlignIO/parse:aparse</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orga2d8288" class="outline-2">
+<h2 id="orga2d8288">ENVIRONMENT</h2>
+<div class="outline-text-2" id="text-orga2d8288">
+</div>
+<div id="outline-container-org1e4a48b" class="outline-3">
+<h3 id="org1e4a48b">PYTHONSTARTUP</h3>
+<div class="outline-text-3" id="text-org1e4a48b">
+<p>
+The value (file-path) of <b>PYTHONSTARTUP</b>, if set, is preserved and set to
+a temporary file with additional import statements before
+interpreter is launched. After the interpreter exits,
+the preserved value is reset.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org7cc750c" class="outline-2">
+<h2 id="org7cc750c">FILES</h2>
+<div class="outline-text-2" id="text-org7cc750c">
+<p>
+A temporary file is used as <b>PYTHONSTARTUP</b>. If is removed after
+the interpreter exits.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org2b11f75" class="outline-2">
+<h2 id="org2b11f75">SEE ALSO</h2>
+<div class="outline-text-2" id="text-org2b11f75">
+<ul class="org-ul">
+<li>numpy</li>
+<li>pandas</li>
+</ul>
+</div>
+</div>
+</div>
+</body>
+</html>

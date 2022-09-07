@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2022-09-07 Wed 19:28 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>countdown</title>
+<meta name="author" content="Pradyumna Paranjape" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="https://fniessen.github.io/org-html-themes/src/readtheorg_theme/css/htmlize.css"/>
+<link rel="stylesheet" type="text/css" href="https://fniessen.github.io/org-html-themes/src/readtheorg_theme/css/readtheorg.css"/>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="https://fniessen.github.io/org-html-themes/src/lib/js/jquery.stickytableheaders.min.js"></script>
+<script type="text/javascript" src="https://fniessen.github.io/org-html-themes/src/readtheorg_theme/js/readtheorg.js"></script>
+</head>
+<body>
+<div id="content" class="content">
+<h1 class="title">countdown</h1>
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#orga2ae1fa">NAME</a></li>
+<li><a href="#orge6b03e6">SYNOPSIS</a></li>
+<li><a href="#orgda13536">DESCRIPTION</a>
+<ul>
+<li><a href="#orge52383e">Optional Arguments</a></li>
+<li><a href="#orgf94324d">Positional Argument</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+
+<div id="outline-container-orga2ae1fa" class="outline-2">
+<h2 id="orga2ae1fa">NAME</h2>
+<div class="outline-text-2" id="text-orga2ae1fa">
+<p>
+countdown - Display a countdown timer on <code>STDOUT</code>, that updates every second.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orge6b03e6" class="outline-2">
+<h2 id="orge6b03e6">SYNOPSIS</h2>
+<div class="outline-text-2" id="text-orge6b03e6">
+<p>
+countdown -h
+</p>
+
+<p>
+countdown &#x2013;help
+</p>
+
+<p>
+countdown [-p|progress] [-n|&#x2013;notify] [-u N|&#x2013;update N] [-t|&#x2013;time] PERIOD
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgda13536" class="outline-2">
+<h2 id="orgda13536">DESCRIPTION</h2>
+<div class="outline-text-2" id="text-orgda13536">
+<p>
+Display a countdown timer on STDOUT, that updates every second
+</p>
+</div>
+
+<div id="outline-container-orge52383e" class="outline-3">
+<h3 id="orge52383e">Optional Arguments</h3>
+<div class="outline-text-3" id="text-orge52383e">
+<p>
+-h                  Print command usage guide and exit
+</p>
+
+<p>
+&#x2013;help              Print this detailed message and exit
+</p>
+
+<p>
+-b|&#x2013;bland          Print bland (without colours) output
+</p>
+
+<p>
+-n|&#x2013;notify         Send desktop notification
+</p>
+
+<p>
+-p|&#x2013;progress       Show progress bar
+</p>
+
+<p>
+-t|&#x2013;time           Treat the positional argument as target time
+</p>
+
+<p>
+-u N|&#x2013;update N     Update every N seconds
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgf94324d" class="outline-3">
+<h3 id="orgf94324d">Positional Argument</h3>
+<div class="outline-text-3" id="text-orgf94324d">
+<p>
+PERIOD              Period in seconds to count down.
+</p>
+
+<p>
+[ This is parsed using <code>/usr/bin/date</code> ]
+</p>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,140 @@
+# -*- mode:org; coding: utf-8; -*-
+#+TITLE: launch_py
+#+AUTHOR: Pradyumna Paranjape
+#+EMAIL: pradyparanjpe@rediffmail.com
+#+LANGUAGE: en
+#+OPTIONS: toc:2 num:nil html-postamble:nil ^:nil mathjax:t TeX:t ::t tags:nil *:t skip:t
+#+PROPERTY: header-args  :tangle pss/bin/launch_py :exports none
+#+SETUPFILE: https://fniessen.github.io/org-html-themes/org/theme-readtheorg.setup
+#+EXPORT_FILE_NAME: docs/launch_py.html
+
+* NAME
+launch_py - launch (i)python with modules pre-imported
+
+* SYNOPSIS
+launch_py -h
+
+launch_py --help
+
+launch_py [[module] ...]
+
+* DESCRIPTION
+Launch python interpreter (ipython if available) with
+some modules already imported. This is a callable wrapper that launches
+a /plastic/ interpreter instance with /arbitrary/ modules; typical use-cases are
+exemplified by *numpy*  and *pandas* scripts that call the wrapped function with
+*numpy* and/or *pandas* pre-imported respectively.
+
+** Optional Arguments:
+-h			Print command usage guide and exit
+
+--help		Print this detailed message and exit
+
+** Positional Arguments:
+module		Module(s) to import [format: see below]
+
+** Module format:
+[Package.][[subpackage.]...]namespace[/object][:asvar]
+
+*** Examples:
+
+| Python Import                           | Command Argument         |
+|-----------------------------------------+--------------------------|
+| import os                               | os                       |
+| import scipy.stats                      | scipy.stats              |
+| import numpy as np                      | numpy:np                 |
+| from pathlib import Path                | pathlib/Path             |
+| from typing import List, Tuple          | typing/List,Tuple        |
+| from Bio.SeqIO import parse             | Bio.SeqIO/parse          |
+| from matplotlib import pyplot as plt    | matplotlib/pyplot:plt    |
+| from Bio.AlignIO import parse as aparse | Bio.AlignIO/parse:aparse |
+
+* ENVIRONMENT
+** PYTHONSTARTUP
+The value (file-path) of *PYTHONSTARTUP*, if set, is preserved and set to
+a temporary file with additional import statements before
+interpreter is launched. After the interpreter exits,
+the preserved value is reset.
+
+* FILES
+A temporary file is used as *PYTHONSTARTUP*. If is removed after
+the interpreter exits.
+
+* SEE ALSO
+- numpy
+- pandas
+
+#+begin_src sh :shebang #!/usr/bin/env sh
+  # -*- coding: utf-8; mode: shell-script; -*-
+  #
+  # Copyright 2021, 2022 Pradyumna Paranjape
+  # This file is part of Prady_sh_scripts.
+  #
+  # Prady_sh_scripts is free software: you can redistribute it and/or modify
+  # it under the terms of the GNU Lesser General Public License as published by
+  # the Free Software Foundation, either version 3 of the License, or
+  # (at your option) any later version.
+  #
+  # Prady_sh_scripts is distributed in the hope that it will be useful,
+  # but WITHOUT ANY WARRANTY; without even the implied warranty of
+  # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  # GNU Lesser General Public License for more details.
+  #
+  # You should have received a copy of the GNU Lesser General Public License
+  # along with Prady_sh_scripts.  If not, see <https://www.gnu.org/licenses/>.
+
+
+  # Launch (i)python with modules imported (wrapper script)
+
+  # shellcheck disable=SC1091
+  . "$(dirname "${0}")/../lib/common" || exit 127
+  . "$(dirname "${0}")/../lib/py_mod_call" || exit 127
+
+
+  set_vars () {
+      usage="
+      usage:
+      ${0} -h
+      ${0} --help
+      ${0} [[module] ...]
+  "
+  }
+
+  unset_vars () {
+      unset usage
+  }
+
+  cli () {
+      while [ $# -gt 0 ]; do
+          case "${1}" in
+              -h)
+                  # shellcheck disable=SC2059
+                  clean_exit 0 "${usage}"
+                  ;;
+              --help)
+                  # shellcheck disable=SC2059
+                   man launch_py
+                  clean_exit 0
+                  ;;
+              ,*)
+                  shift
+                  ;;
+          esac
+      done
+  }
+
+
+  load () {
+      mod_call "$@"
+      clean_exit $?
+  }
+
+
+  main () {
+      set_vars
+      cli "$@"
+      load "$@"
+  }
+
+  main "$@"
+#+end_src

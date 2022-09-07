@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2022-09-07 Wed 19:28 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>host_on_net</title>
+<meta name="author" content="Pradyumna Paranjape" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="https://fniessen.github.io/org-html-themes/src/readtheorg_theme/css/htmlize.css"/>
+<link rel="stylesheet" type="text/css" href="https://fniessen.github.io/org-html-themes/src/readtheorg_theme/css/readtheorg.css"/>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="https://fniessen.github.io/org-html-themes/src/lib/js/jquery.stickytableheaders.min.js"></script>
+<script type="text/javascript" src="https://fniessen.github.io/org-html-themes/src/readtheorg_theme/js/readtheorg.js"></script>
+</head>
+<body>
+<div id="content" class="content">
+<h1 class="title">host_on_net</h1>
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#org2f1855a">NAME</a></li>
+<li><a href="#orga54d214">SYNOPSIS</a></li>
+<li><a href="#org8456a1b">DESCRIPTION</a>
+<ul>
+<li><a href="#org602efd3">Optional Arguments:</a></li>
+</ul>
+</li>
+<li><a href="#org656f96e">ENVIRONMENT</a>
+<ul>
+<li><a href="#org1cfad9a">USERNAME</a></li>
+<li><a href="#orgba92eb2">BINDPORT</a></li>
+<li><a href="#org09a5db8">BINDHOST</a></li>
+</ul>
+</li>
+<li><a href="#org7f4fd75">FILES</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org2f1855a" class="outline-2">
+<h2 id="org2f1855a">NAME</h2>
+<div class="outline-text-2" id="text-org2f1855a">
+<p>
+host_on_net - clear cache by passing '3' to <code>/proc/sys/vm/drop_caches</code>
+</p>
+</div>
+</div>
+
+<div id="outline-container-orga54d214" class="outline-2">
+<h2 id="orga54d214">SYNOPSIS</h2>
+<div class="outline-text-2" id="text-orga54d214">
+<p>
+USERNAME= BINDPORT=80 BINDHOST=serveo.net host_on_net
+</p>
+</div>
+</div>
+
+<div id="outline-container-org8456a1b" class="outline-2">
+<h2 id="org8456a1b">DESCRIPTION</h2>
+<div class="outline-text-2" id="text-org8456a1b">
+</div>
+<div id="outline-container-org602efd3" class="outline-3">
+<h3 id="org602efd3">Optional Arguments:</h3>
+</div>
+</div>
+
+<div id="outline-container-org656f96e" class="outline-2">
+<h2 id="org656f96e">ENVIRONMENT</h2>
+<div class="outline-text-2" id="text-org656f96e">
+</div>
+<div id="outline-container-org1cfad9a" class="outline-3">
+<h3 id="org1cfad9a">USERNAME</h3>
+<div class="outline-text-3" id="text-org1cfad9a">
+<p>
+Reverse bind username, default <code>${USER}</code>
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgba92eb2" class="outline-3">
+<h3 id="orgba92eb2">BINDPORT</h3>
+<div class="outline-text-3" id="text-orgba92eb2">
+<p>
+Port to reverse bind, default: 80
+</p>
+</div>
+</div>
+
+<div id="outline-container-org09a5db8" class="outline-3">
+<h3 id="org09a5db8">BINDHOST</h3>
+<div class="outline-text-3" id="text-org09a5db8">
+<p>
+Host to reverse bind, default: serveo.net
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org7f4fd75" class="outline-2">
+<h2 id="org7f4fd75">FILES</h2>
+<div class="outline-text-2" id="text-org7f4fd75">
+<ul class="org-ul">
+<li><code>${XDG_STATE_HOME:-${HOME}/.local/state}/${BINDHOST}.log</code> server logs</li>
+<li><code>${XDG_STATE_HOME:-${HOME}/.local/state}/${BINDHOST}.err</code> server errors</li>
+</ul>
+</div>
+</div>
+</div>
+</body>
+</html>

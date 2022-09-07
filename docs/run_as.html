@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2022-09-07 Wed 19:28 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>run_as</title>
+<meta name="author" content="Pradyumna Paranjape" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="https://fniessen.github.io/org-html-themes/src/readtheorg_theme/css/htmlize.css"/>
+<link rel="stylesheet" type="text/css" href="https://fniessen.github.io/org-html-themes/src/readtheorg_theme/css/readtheorg.css"/>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="https://fniessen.github.io/org-html-themes/src/lib/js/jquery.stickytableheaders.min.js"></script>
+<script type="text/javascript" src="https://fniessen.github.io/org-html-themes/src/readtheorg_theme/js/readtheorg.js"></script>
+</head>
+<body>
+<div id="content" class="content">
+<h1 class="title">run_as</h1>
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#orgec2aae8">NAME</a></li>
+<li><a href="#orgf34d4d6">SYNOPSIS</a></li>
+<li><a href="#org542190a">DESCRIPTION</a>
+<ul>
+<li><a href="#org57058f2">Optional Args:</a></li>
+<li><a href="#orgb60c1c3">Positional Args:</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgec2aae8" class="outline-2">
+<h2 id="orgec2aae8">NAME</h2>
+<div class="outline-text-2" id="text-orgec2aae8">
+<p>
+run_as - Run PROGRAM as USER at REMOTEIP using ssh -X tunnel (or waypipe)
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgf34d4d6" class="outline-2">
+<h2 id="orgf34d4d6">SYNOPSIS</h2>
+<div class="outline-text-2" id="text-orgf34d4d6">
+<p>
+run_as -h
+run_as &#x2013;help
+run_as [-u USER|&#x2013;user USER] [-i IP|&#x2013;ip IP] [-p PROG|&#x2013;ip PROG] [EXECSTR]
+</p>
+</div>
+</div>
+
+<div id="outline-container-org542190a" class="outline-2">
+<h2 id="org542190a">DESCRIPTION</h2>
+<div class="outline-text-2" id="text-org542190a">
+<p>
+Run PROGRAM as USER at REMOTEIP using ssh -X tunnel (or waypipe)
+</p>
+</div>
+
+<div id="outline-container-org57058f2" class="outline-3">
+<h3 id="org57058f2">Optional Args:</h3>
+<div class="outline-text-3" id="text-org57058f2">
+<p>
+-h                      Display usage command and exit
+</p>
+
+<p>
+&#x2013;help                  Display this detailed help message and exit
+</p>
+
+<p>
+-n|&#x2013;non-interactive    Do not prompt for missing items
+</p>
+
+<p>
+-u USER|&#x2013;user USER Username
+</p>
+
+<p>
+-i IP|&#x2013;ip IP       [IP/Web] address
+</p>
+
+<p>
+-p PROG|&#x2013;p PROG    program to run
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgb60c1c3" class="outline-3">
+<h3 id="orgb60c1c3">Positional Args:</h3>
+<div class="outline-text-3" id="text-orgb60c1c3">
+<p>
+EXECSTR             Remote program string of the form [PROGRAM:][USER][@REMOTEIP]
+</p>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

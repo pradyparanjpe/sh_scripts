@@ -1,0 +1,229 @@
+# -*- mode:org; coding: utf-8; -*-
+#+TITLE: scan_network_upnodes
+#+AUTHOR: Pradyumna Paranjape
+#+EMAIL: pradyparanjpe@rediffmail.com
+#+LANGUAGE: en
+#+OPTIONS: toc:2 num:nil html-postamble:nil ^:nil mathjax:t TeX:t ::t tags:nil *:t skip:t
+#+PROPERTY: header-args  :tangle pss/bin/scan_network_upnodes :exports none
+#+SETUPFILE: https://fniessen.github.io/org-html-themes/org/theme-readtheorg.setup
+#+EXPORT_FILE_NAME: docs/scan_network_upnodes.html
+
+
+* NAME
+scan_network_upnodes - scan network for nodes that are *up*.
+
+* SYNOPSIS
+scan_network_upnodes.sh -h
+
+scan_network_upnodes.sh --help
+
+scan_network_upnodes.sh [options] IPRANGE STARTIP STOPIP
+
+* DESCRIPTION
+ping IP in 192.168.IPRANGE.* and report responding nodes
+
+** Optional Arguments:
+-h                  Print usage and exit
+
+--help              Print this help message and exit
+
+-d|--down           Print 'down' IPs as !down!
+
+-p PORT|--port PORT Scan these ports (passed to =nmap=)
+
+**  Positional Arguments:
+IPRANGE     penultimate 8 bits [default=0]
+
+STARTIP     starting node to scan [default=2]
+
+STOPIP      last node to scan [default=254]
+
+* SEE ALSO
+- nmap
+- ping
+
+#+begin_src sh :shebang #!/usr/bin/env sh
+  # -*- coding: utf-8; mode: shell-script; -*-
+  #
+  # Copyright 2020-2022 Pradyumna Paranjape
+  #
+  # This file is part of Prady_sh_scripts.
+  # Prady_sh_scripts is free software: you can redistribute it and/or modify
+  # it under the terms of the GNU General Public License as published by
+  # the Free Software Foundation, either version 3 of the License, or
+  # (at your option) any later version.
+  #
+  # Prady_sh_scripts is distributed in the hope that it will be useful,
+  # but WITHOUT ANY WARRANTY; without even the implied warranty of
+  # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  # GNU General Public License for more details.
+  #
+  # You should have received a copy of the GNU General Public License
+  # along with Prady_sh_scripts.  If not, see <https://www.gnu.org/licenses/>.
+  #
+  # Files in this project contain regular utilities and aliases for linux (fc34)
+
+  # Scan Up Nodes
+
+
+  # shellcheck disable=SC1091
+  . "$(dirname "${0}")/../lib/common" || exit 127
+
+
+  set_vars() {
+      ports=
+      ip_range=0
+      startip=2
+      stopip=254
+      down=false
+      usage="usage:
+      $0 -h
+      $0 --help
+      $0 [options] IPRANGE STARTIP STOPIP"
+      help_msg="${usage}
+
+      DESCRIPTION:
+      ping ip in 192.168.IPRANGE.* and report responding nodes
+
+      Optional Arguments:
+      -h\t\t\tPrint usage and exit
+      --help\t\tPrint this help message and exit
+      -d|--down\t\tPrint 'down' IPs as !down!
+      -p PORT|--port PORT\tScan these ports (passed to nmap)
+
+      Positional Arguments:
+      IPRANGE\tpenultimate 8 bits [default=${ip_range}]
+      STARTIP\tstarting node to scan [default=${startip}]
+      STOPIP\tlast node to scan [default=${stopip}]
+  "
+      load_default_config || true
+  }
+
+  unset_vars() {
+      unset ports
+      unset ip_range
+      unset startip
+      unset stopip
+      unset help_msg
+      unset down
+      unset usage
+  }
+
+
+  cli () {
+      pos=
+      while [ $# -gt 0 ]; do
+          case "$1" in
+              -h)
+                  unset pos
+                  clean_exit 0 "${usage}"
+                  ;;
+              --help)
+                  unset pos
+                  clean_exit 0 "${help_msg}"
+                  ;;
+
+              -p|--port|-p=*|--port=*)
+                  if [ ! "${1#*=}" = "${1}" ]; then
+                      ports="$(printf "%s" "$1" | cut -d "=" -f 2)"
+                  else
+                      shift
+                      ports="${1}"
+                  fi
+                  shift
+                  ;;
+              -d|--down)
+                  down=true
+                  shift 1
+                  ;;
+              ,*)
+                  if [ -n "${pos}" ]; then
+                      pos="${pos} ${1}"
+                  else
+                      pos="${1}"
+                  fi
+                  shift 1
+                  ;;
+          esac
+      done
+      # shellcheck disable=SC2086  # virbatim
+      set -- $pos
+      case $# in
+          3)
+              read -r ip_range startip stopip << EOF
+  $*
+  EOF
+              ;;
+          2)
+              read -r ip_range startip << EOF
+  $*
+  EOF
+              ;;
+          1)
+              ip_range="${1}"
+              ;;
+          0)
+              ;;
+          ,*)
+              clean_exit 1 "${usage}"
+              ;;
+      esac
+      if [ "$ip_range" -gt 255 ] || [ "$ip_range" -lt 0 ]; then
+          clean_exit 1 "bad IPRANGE: ${ip_range}"
+      fi
+      if [ "$stopip" -gt 255 ] || [ "$stopip" -lt 0 ]; then
+          clean_exit 1 "bad STOPIP: ${stopip}"
+      fi
+      if [ "$startip" -gt "${stopip}" ] || [ "$startip" -lt 0 ]; then
+          clean_exit 1 "bad STARTIP: ${startip}"
+      fi
+      unset pos
+  }
+
+  scanport() {
+      if [ -z "${ports}" ] || [ -z "${1}" ]; then
+          return
+      fi
+      printf "Scanning UP machines for ports: %s\n" "${ports}"
+      for mach in ${1}; do
+          printf "Scanning %s\n" "${mach}"
+          nmap -p "${ports}" "${mach}"
+      done
+      unset mach
+      unset portnum
+  }
+
+  scan () {
+      printf "Scanning 192.168.%s.%s to 192.168.%s.%s\n" "${ip_range}" \
+             "${startip}" "${ip_range}" "${stopip}"
+      printf "The following ip addresses are up:\n"
+      if ${down}; then
+          printf "OR !down!:\n"
+      fi
+      printf ""
+
+      ip_up=
+      for testip in $(seq "$startip" "$stopip"); do
+          target_ip="192.168.${ip_range}.${testip}"
+          isdown="$(ping -c 1 "${target_ip}" -w 1 -q)";
+          if [ "${isdown#*100}" = "${isdown}" ]; then
+              printf "%s\t" "${testip}";
+              ip_up="${ip_up} ${target_ip}"
+          elif ${down}; then
+              printf "!%s!\t" "${testip}";
+          fi;
+      done;
+      printf "\n"
+      scanport "${ip_up}"
+      unset ip_up
+  }
+
+  main() {
+      set_vars
+      cli "$@"
+      scan
+      clean_exit
+  }
+
+  main "$@"
+#+end_src

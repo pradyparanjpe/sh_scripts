@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2022-09-07 Wed 19:28 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>relink</title>
+<meta name="author" content="Pradyumna Paranjape" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="https://fniessen.github.io/org-html-themes/src/readtheorg_theme/css/htmlize.css"/>
+<link rel="stylesheet" type="text/css" href="https://fniessen.github.io/org-html-themes/src/readtheorg_theme/css/readtheorg.css"/>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="https://fniessen.github.io/org-html-themes/src/lib/js/jquery.stickytableheaders.min.js"></script>
+<script type="text/javascript" src="https://fniessen.github.io/org-html-themes/src/readtheorg_theme/js/readtheorg.js"></script>
+</head>
+<body>
+<div id="content" class="content">
+<h1 class="title">relink</h1>
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#orge8ef27b">NAME</a></li>
+<li><a href="#org698d687">SYNOPSIS</a></li>
+<li><a href="#orgc2e1850">DESCRIPTION</a>
+<ul>
+<li><a href="#org6bca5a8">Positional Arguments:</a></li>
+<li><a href="#orgb8a7df6">Optional Arguments:</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orge8ef27b" class="outline-2">
+<h2 id="orge8ef27b">NAME</h2>
+<div class="outline-text-2" id="text-orge8ef27b">
+<p>
+relink - (Soft) Re-link all link-files
+</p>
+</div>
+</div>
+
+<div id="outline-container-org698d687" class="outline-2">
+<h2 id="org698d687">SYNOPSIS</h2>
+<div class="outline-text-2" id="text-org698d687">
+<p>
+relink -h
+</p>
+
+<p>
+relink &#x2013;help
+</p>
+
+<p>
+relink [-v|&#x2013;verbose] [-c|&#x2013;commit] LINK_DIR MOD_PAT [NEW_STR]
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgc2e1850" class="outline-2">
+<h2 id="orgc2e1850">DESCRIPTION</h2>
+<div class="outline-text-2" id="text-orgc2e1850">
+<p>
+Re-link (soft) all link-files in LINK_DIR by replacing MOD_PAT
+with NEW_STR. The default behaviour is to dry-simulate the
+process and show a verbose output of proposed changes. If
+NEW_STR is not supplied (safe), all prospective affected files
+are shown. Changes will be committed (written) only if NEW_STR
+and <code>-c</code> flag are supplied. Blank NEW_STR may be supplied as <code>""</code>.
+</p>
+</div>
+
+
+<div id="outline-container-org6bca5a8" class="outline-3">
+<h3 id="org6bca5a8">Positional Arguments:</h3>
+<div class="outline-text-3" id="text-org6bca5a8">
+<p>
+LINK_DIR:           Directory in which links are located
+</p>
+
+<p>
+MOD_PAT:            Pattern in link-targets to be altered
+</p>
+
+<p>
+NEW_STR:            Replace MOD_PAT by NEW_STR if given
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgb8a7df6" class="outline-3">
+<h3 id="orgb8a7df6">Optional Arguments:</h3>
+<div class="outline-text-3" id="text-orgb8a7df6">
+<p>
+-h                  Display usage message and exit
+</p>
+
+<p>
+&#x2013;help              Display this help message and exit
+</p>
+
+<p>
+-m|&#x2013;mock           Do not perform action, only mock (assumes verbose)
+</p>
+
+<p>
+-v|&#x2013;verbose        Display verbose outputs
+</p>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

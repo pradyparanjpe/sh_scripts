@@ -1,0 +1,64 @@
+# -*- mode:org; coding: utf-8; -*-
+#+TITLE: startup-analysis
+#+AUTHOR: Pradyumna Paranjape
+#+EMAIL: pradyparanjpe@rediffmail.com
+#+LANGUAGE: en
+#+OPTIONS: toc:2 num:nil html-postamble:nil ^:nil mathjax:t TeX:t ::t tags:nil *:t skip:t
+#+PROPERTY: header-args  :tangle pss/bin/startup-analysis :exports none
+#+SETUPFILE: https://fniessen.github.io/org-html-themes/org/theme-readtheorg.setup
+#+EXPORT_FILE_NAME: docs/startup-analysis.html
+
+
+* NAME
+startup-analysis - =systemd-analyze= after each startup.
+
+* SYNOPSIS
+startup_analysis
+
+startup_analysis -h
+
+* DESCRIPTION
+
+Store ~systemd-analyze plot~ to XDG_STATE_HOME.
+
+* ENVIRONMENT
+** XDG_STATE_HOME
+Parent directory to store image.
+=XDG_STATE_HOME= is should to be =${HOME}/.local/state.=
+
+#+begin_src sh :shebang #!/usr/bin/env sh
+  # -*- coding:utf-8; mode:shell-script -*-
+  #
+  # Copyright 2020-2022 Pradyumna Paranjape
+  #
+  # This file is part of Prady_sh_scripts.
+  # Prady_sh_scripts is free software: you can redistribute it and/or modify
+  # it under the terms of the GNU General Public License as published by
+  # the Free Software Foundation, either version 3 of the License, or
+  # (at your option) any later version.
+  #
+  # Prady_sh_scripts is distributed in the hope that it will be useful,
+  # but WITHOUT ANY WARRANTY; without even the implied warranty of
+  # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  # GNU General Public License for more details.
+  #
+  # You should have received a copy of the GNU General Public License
+  # along with Prady_sh_scripts.  If not, see <https://www.gnu.org/licenses/>.
+  #
+  # Files in this project contain regular utilities and aliases for linux (fc34)
+
+  # store systemd startup analysis plot
+
+  if [ $# -ne 0 ]; then
+      printf "
+      usage: %s\n" "${0}"
+      printf "\n"
+      printf "
+      DESCRIPTION
+
+      Store systemd-analyze plot to XDG_STATE_HOME.\n"
+      exit
+  fi
+
+  systemd-analyze plot > "${XDG_STATE_HOME:-${HOME}/.local/state}/$(uname -n)_startup.svg"
+#+end_src

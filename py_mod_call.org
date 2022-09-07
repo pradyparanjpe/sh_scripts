@@ -1,0 +1,114 @@
+# -*- mode:org; coding: utf-8; -*-
+#+TITLE: py_mod_call
+#+AUTHOR: Pradyumna Paranjape
+#+EMAIL: pradyparanjpe@rediffmail.com
+#+LANGUAGE: en
+#+OPTIONS: toc:2 num:nil html-postamble:nil ^:nil mathjax:t TeX:t ::t tags:nil *:t skip:t
+#+PROPERTY: header-args  :tangle pss/lib/py_mod_call :exports none
+#+SETUPFILE: https://fniessen.github.io/org-html-themes/org/theme-readtheorg.setup
+#+EXPORT_FILE_NAME: docs/py_mod_call.html
+#+MAN_CLASS_OPTIONS: :section-id 7
+
+* NAME
+~mod_call~ function is used by ~numpy~, ~pandas~, ~launch_py~
+
+* DESCRIPTION
+Common function available for import to launch python with pre-loaded modules.
+
+* SEE ALSO
+- numpy
+- pandas
+- launch_py
+
+
+#+begin_src sh :shebang #!/usr/bin/env sh
+# -*- coding: utf-8; mode: shell-script -*-
+#
+# Copyright 2021, 2022 Pradyumna Paranjape
+# This file is part of Prady_sh_scripts.
+#
+# Prady_sh_scripts is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# Prady_sh_scripts is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License
+# along with Prady_sh_scripts.  If not, see <https://www.gnu.org/licenses/>.
+
+
+# Launch (i)python with modules imported
+
+mod_call () {
+    # $@: [Package.]namespace[[.subspace]*][/object][:asvar]
+    # e.g.
+    #   - os -> import os
+    #   - pathlib/Path -> from pathlib import Path
+    #   - scipy.stats -> import scipy.stats
+    #   - numpy:np -> import numpy as np
+    #   - Bio.SeqIO/parse -> from Bio.SeqIO import parse
+    #   - matplotlib/pyplot:plt -> from matplotlib import pyplot as plt
+    #   - Bio.AlignIO/parse:aparse -> from Bio.AlignIO import parse a aparse
+    if [ -f "${PYTHONSTARTUP}" ]; then
+        inherit_str="$(cat PYTHONSTARTUP)"
+    fi
+
+    _OLD_PYTHONSTARTUP="${PYTHONSTARTUP}"
+    PYTHONSTARTUP="$(mktemp)"
+
+    # imports
+    { \
+        echo "from psprint import print as _print"
+        echo "_print('Imports:', mark='info')"
+        echo "${inherit_str}";
+        for mod in "$@"; do
+            asvar=
+            nsp=
+            objct=
+            target="$(echo "${mod}" | cut -d ":" -f 1)"
+            if [ ! "${mod}" = "${mod%:*}" ]; then
+                asvar=" as $(echo "${mod}" | cut -d ":" -f 2)"
+            fi
+            if [ ! "${target}" = "${target%/*}" ]; then
+                objct="import $(echo "${target}" | cut -d "/" -f 2)"
+                nsp="from $(echo "${target}" | cut -d "/" -f 1) "
+            else
+                objct="import ${target}"
+            fi
+            echo "${nsp}${objct}${asvar}"
+            echo "_print('${nsp}${objct}${asvar}', mark='list', indent=1)"
+        done
+        echo "del _print"
+    } >> "${PYTHONSTARTUP}"
+
+    export PYTHONSTARTUP
+
+    # launch
+    if builtin command -v ipython >/dev/null 2>&1; then
+        ipython
+        exit_code=$?
+    else
+        python3
+        exit_code=$?
+    fi
+
+    # clean up
+    rm -rf "${PYTHONSTARTUP}"
+
+    if [ -n "${_OLD_PYTHONSTARTUP}" ]; then
+        PYTHONSTARTUP="${_OLD_PYTHONSTARTUP}"
+        export PYTHONSTARTUP
+    else
+        unset PYTHONSTARTUP
+    fi
+    unset _OLD_PYTHONSTARTUP
+    unset inherit_str
+
+    return ${exit_code}
+}
+
+#+end_src

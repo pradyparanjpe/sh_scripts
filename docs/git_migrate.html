@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2022-09-07 Wed 19:28 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>git_migrate</title>
+<meta name="author" content="Pradyumna Paranjape" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="https://fniessen.github.io/org-html-themes/src/readtheorg_theme/css/htmlize.css"/>
+<link rel="stylesheet" type="text/css" href="https://fniessen.github.io/org-html-themes/src/readtheorg_theme/css/readtheorg.css"/>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="https://fniessen.github.io/org-html-themes/src/lib/js/jquery.stickytableheaders.min.js"></script>
+<script type="text/javascript" src="https://fniessen.github.io/org-html-themes/src/readtheorg_theme/js/readtheorg.js"></script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        displayAlign: "center",
+        displayIndent: "0em",
+
+        "HTML-CSS": { scale: 100,
+                        linebreaks: { automatic: "false" },
+                        webFont: "TeX"
+                       },
+        SVG: {scale: 100,
+              linebreaks: { automatic: "false" },
+              font: "TeX"},
+        NativeMML: {scale: 100},
+        TeX: { equationNumbers: {autoNumber: "AMS"},
+               MultLineWidth: "85%",
+               TagSide: "right",
+               TagIndent: ".8em"
+             }
+});
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML"></script>
+</head>
+<body>
+<div id="content" class="content">
+<h1 class="title">git_migrate</h1>
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#org864aec4">NAME</a></li>
+<li><a href="#org6f247df">SYNOPSIS</a></li>
+<li><a href="#org1ec0dce">DESCRIPTION</a>
+<ul>
+<li><a href="#org51c7f05">Optional Arguments</a></li>
+<li><a href="#org86655ee">CONFIGURATION</a></li>
+</ul>
+</li>
+<li><a href="#orgaf5d3c2">FILES</a>
+<ul>
+<li><a href="#orgd669f84">migrate</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org864aec4" class="outline-2">
+<h2 id="org864aec4">NAME</h2>
+<div class="outline-text-2" id="text-org864aec4">
+<p>
+git_migrate - migrate git from old to new repo.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org6f247df" class="outline-2">
+<h2 id="org6f247df">SYNOPSIS</h2>
+<div class="outline-text-2" id="text-org6f247df">
+<p>
+git_migrate [-h|&#x2013;help]
+</p>
+
+<p>
+git_migrate
+</p>
+</div>
+</div>
+
+<div id="outline-container-org1ec0dce" class="outline-2">
+<h2 id="org1ec0dce">DESCRIPTION</h2>
+<div class="outline-text-2" id="text-org1ec0dce">
+<p>
+Migrate by copying all repositories and all their branches and pushing them.
+Default action is to read configuration file and list known values.
+With NEW argument, $ git remote add NEW/repo.git is executed.
+</p>
+</div>
+
+<div id="outline-container-org51c7f05" class="outline-3">
+<h3 id="org51c7f05">Optional Arguments</h3>
+<div class="outline-text-3" id="text-org51c7f05">
+<p>
+-h                          print usage message and exit
+</p>
+
+<p>
+&#x2013;help                      print this detailed help message and exit
+</p>
+
+<p>
+-r ROOT|&#x2013;root ROOT         root directory for all git repos [ default: <code>${PWD}</code> ]
+</p>
+
+<p>
+-c CONF|&#x2013;conf CONF         confituration file naming repos [default: <code>${PWD}/migrate</code> ]
+</p>
+
+<p>
+-s STALE|&#x2013;stale STALE      base url of github repository [default: <a href="https://github.com/$%7BUSER">https://github.com/$%7BUSER</a>}]
+</p>
+
+<p>
+-n NEW|&#x2013;new NEW            add remote base url of new repository
+</p>
+
+<p>
+-p|&#x2013;push                   push to new repo [default: id to fetch]
+</p>
+
+<p>
+-f|&#x2013;fetch                  fetch from STALE repo
+</p>
+
+<p>
+-u|&#x2013;unadd                  undo addition of new repository remote
+</p>
+</div>
+</div>
+
+<div id="outline-container-org86655ee" class="outline-3">
+<h3 id="org86655ee">CONFIGURATION</h3>
+<div class="outline-text-3" id="text-org86655ee">
+<p>
+Pass via configuration file (optional argument -c).
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgaf5d3c2" class="outline-2">
+<h2 id="orgaf5d3c2">FILES</h2>
+<div class="outline-text-2" id="text-orgaf5d3c2">
+</div>
+<div id="outline-container-orgd669f84" class="outline-3">
+<h3 id="orgd669f84">migrate</h3>
+<div class="outline-text-3" id="text-orgd669f84">
+<p>
+regex pattern: (OLD_REPO_NAME(.git)?(:NEW_REPO_NAME(.git)?)?\n)*
+</p>
+
+<p>
+If NEW_REPO_NAME is not provided, OLD_REPO_NAME is used
+</p>
+</div>
+
+<div id="outline-container-org452bf1e" class="outline-4">
+<h4 id="org452bf1e">Example</h4>
+<div class="outline-text-4" id="text-org452bf1e">
+<pre class="example">
+myRepo1.git:myrepo1
+myrepo2
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

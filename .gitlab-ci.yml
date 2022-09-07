@@ -1,0 +1,21 @@
+image: alpine
+
+build:
+  stage: build
+  script:
+  - echo "Building..."
+  - publish.el
+  artifacts:
+    path:
+    - docs
+    - pss
+
+pages:
+  after: generate
+  stage: deploy
+  artifacts:
+    path:
+    - docs
+    - pss
+    rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH

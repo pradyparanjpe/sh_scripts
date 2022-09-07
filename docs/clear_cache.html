@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2022-09-07 Wed 19:28 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>clear_cache</title>
+<meta name="author" content="Pradyumna Paranjape" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="https://fniessen.github.io/org-html-themes/src/readtheorg_theme/css/htmlize.css"/>
+<link rel="stylesheet" type="text/css" href="https://fniessen.github.io/org-html-themes/src/readtheorg_theme/css/readtheorg.css"/>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="https://fniessen.github.io/org-html-themes/src/lib/js/jquery.stickytableheaders.min.js"></script>
+<script type="text/javascript" src="https://fniessen.github.io/org-html-themes/src/readtheorg_theme/js/readtheorg.js"></script>
+</head>
+<body>
+<div id="content" class="content">
+<h1 class="title">clear_cache</h1>
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#org0385176">NAME</a></li>
+<li><a href="#org1051745">SYNOPSIS</a></li>
+<li><a href="#org654b8ed">DESCRIPTION</a>
+<ul>
+<li><a href="#org17958df">Optional Arguments:</a></li>
+</ul>
+</li>
+<li><a href="#org1b88615">FILES</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org0385176" class="outline-2">
+<h2 id="org0385176">NAME</h2>
+<div class="outline-text-2" id="text-org0385176">
+<p>
+clear_cache - clear cache by passing '3' to <code>/proc/sys/vm/drop_caches</code>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org1051745" class="outline-2">
+<h2 id="org1051745">SYNOPSIS</h2>
+<div class="outline-text-2" id="text-org1051745">
+<p>
+clear_cache -h
+</p>
+
+<p>
+clear_cache &#x2013;help
+</p>
+
+<p>
+clear_cache [-y|&#x2013;assumeyes] [-n|&#x2013;assumeno]
+</p>
+</div>
+</div>
+
+<div id="outline-container-org654b8ed" class="outline-2">
+<h2 id="org654b8ed">DESCRIPTION</h2>
+<div class="outline-text-2" id="text-org654b8ed">
+<p>
+Clear cache by passing '3' to <code>/proc/sys/vm/drop_caches</code>
+After confirmation, super-user privileges will be requested.
+</p>
+</div>
+
+<div id="outline-container-org17958df" class="outline-3">
+<h3 id="org17958df">Optional Arguments:</h3>
+<div class="outline-text-3" id="text-org17958df">
+<p>
+-h			Print command usage guide and exit
+</p>
+
+<p>
+&#x2013;help		Print this detailed message and exit
+</p>
+
+<p>
+-y|&#x2013;assumeyes      don't prompt, assume yes to all
+</p>
+
+<p>
+-n|&#x2013;assumeno       don't prompt, assume no to all
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org1b88615" class="outline-2">
+<h2 id="org1b88615">FILES</h2>
+<div class="outline-text-2" id="text-org1b88615">
+<p>
+Linux system file <code>/proc/sys/vm/drop_caches</code>.
+</p>
+</div>
+</div>
+</div>
+</body>
+</html>
