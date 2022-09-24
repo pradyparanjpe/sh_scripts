@@ -4,7 +4,7 @@ build:
   stage: build
   script:
   - echo "Building..."
-  - publish.el
+  - cl publish.el
   artifacts:
     path:
     - docs

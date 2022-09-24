@@ -63,7 +63,7 @@ SOURCE                      source domain [default: [[https://gnu.org]] ]
   # retreive, display and/or set current time
 
   # shellcheck disable=SC1091
-  . "$(dirname "${0}")../lib/common" || exit 127
+  . "$(dirname "${0}")/../lib/common" || exit 127
 
   set_vars() {
       set_time=
