@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2022-09-08 Thu 23:36 -->
+<!-- 2022-11-12 Sat 10:45 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>git_migrate</title>
@@ -44,35 +44,35 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org864aec4">NAME</a></li>
-<li><a href="#org6f247df">SYNOPSIS</a></li>
-<li><a href="#org1ec0dce">DESCRIPTION</a>
+<li><a href="#org82b487c">NAME</a></li>
+<li><a href="#org8a9285e">SYNOPSIS</a></li>
+<li><a href="#orgcb1120b">DESCRIPTION</a>
 <ul>
-<li><a href="#org51c7f05">Optional Arguments</a></li>
-<li><a href="#org86655ee">CONFIGURATION</a></li>
+<li><a href="#org5a6b101">Optional Arguments</a></li>
+<li><a href="#orga5a5df3">CONFIGURATION</a></li>
 </ul>
 </li>
-<li><a href="#orgaf5d3c2">FILES</a>
+<li><a href="#orgeb7c208">FILES</a>
 <ul>
-<li><a href="#orgd669f84">migrate</a></li>
+<li><a href="#org83f18ca">migrate</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org864aec4" class="outline-2">
-<h2 id="org864aec4">NAME</h2>
-<div class="outline-text-2" id="text-org864aec4">
+<div id="outline-container-org82b487c" class="outline-2">
+<h2 id="org82b487c">NAME</h2>
+<div class="outline-text-2" id="text-org82b487c">
 <p>
 git_migrate - migrate git from old to new repo.
 </p>
 </div>
 </div>
 
-<div id="outline-container-org6f247df" class="outline-2">
-<h2 id="org6f247df">SYNOPSIS</h2>
-<div class="outline-text-2" id="text-org6f247df">
+<div id="outline-container-org8a9285e" class="outline-2">
+<h2 id="org8a9285e">SYNOPSIS</h2>
+<div class="outline-text-2" id="text-org8a9285e">
 <p>
 git_migrate [-h|&#x2013;help]
 </p>
@@ -83,9 +83,9 @@ git_migrate
 </div>
 </div>
 
-<div id="outline-container-org1ec0dce" class="outline-2">
-<h2 id="org1ec0dce">DESCRIPTION</h2>
-<div class="outline-text-2" id="text-org1ec0dce">
+<div id="outline-container-orgcb1120b" class="outline-2">
+<h2 id="orgcb1120b">DESCRIPTION</h2>
+<div class="outline-text-2" id="text-orgcb1120b">
 <p>
 Migrate by copying all repositories and all their branches and pushing them.
 Default action is to read configuration file and list known values.
@@ -93,9 +93,9 @@ With NEW argument, $ git remote add NEW/repo.git is executed.
 </p>
 </div>
 
-<div id="outline-container-org51c7f05" class="outline-3">
-<h3 id="org51c7f05">Optional Arguments</h3>
-<div class="outline-text-3" id="text-org51c7f05">
+<div id="outline-container-org5a6b101" class="outline-3">
+<h3 id="org5a6b101">Optional Arguments</h3>
+<div class="outline-text-3" id="text-org5a6b101">
 <p>
 -h                          print usage message and exit
 </p>
@@ -134,9 +134,9 @@ With NEW argument, $ git remote add NEW/repo.git is executed.
 </div>
 </div>
 
-<div id="outline-container-org86655ee" class="outline-3">
-<h3 id="org86655ee">CONFIGURATION</h3>
-<div class="outline-text-3" id="text-org86655ee">
+<div id="outline-container-orga5a5df3" class="outline-3">
+<h3 id="orga5a5df3">CONFIGURATION</h3>
+<div class="outline-text-3" id="text-orga5a5df3">
 <p>
 Pass via configuration file (optional argument -c).
 </p>
@@ -144,13 +144,13 @@ Pass via configuration file (optional argument -c).
 </div>
 </div>
 
-<div id="outline-container-orgaf5d3c2" class="outline-2">
-<h2 id="orgaf5d3c2">FILES</h2>
-<div class="outline-text-2" id="text-orgaf5d3c2">
+<div id="outline-container-orgeb7c208" class="outline-2">
+<h2 id="orgeb7c208">FILES</h2>
+<div class="outline-text-2" id="text-orgeb7c208">
 </div>
-<div id="outline-container-orgd669f84" class="outline-3">
-<h3 id="orgd669f84">migrate</h3>
-<div class="outline-text-3" id="text-orgd669f84">
+<div id="outline-container-org83f18ca" class="outline-3">
+<h3 id="org83f18ca">migrate</h3>
+<div class="outline-text-3" id="text-org83f18ca">
 <p>
 regex pattern: (OLD_REPO_NAME(.git)?(:NEW_REPO_NAME(.git)?)?\n)*
 </p>
@@ -160,9 +160,9 @@ If NEW_REPO_NAME is not provided, OLD_REPO_NAME is used
 </p>
 </div>
 
-<div id="outline-container-org452bf1e" class="outline-4">
-<h4 id="org452bf1e">Example</h4>
-<div class="outline-text-4" id="text-org452bf1e">
+<div id="outline-container-org32cabf5" class="outline-4">
+<h4 id="org32cabf5">Example</h4>
+<div class="outline-text-4" id="text-org32cabf5">
 <pre class="example">
 myRepo1.git:myrepo1
 myrepo2

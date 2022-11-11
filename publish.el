@@ -1,8 +1,28 @@
+;; publish.el --- Publish pss on Gitlab Pages
+;; Author: Pradyumna Paranjape
+
+;;; Commentary:
+;; This script will tangle and export org mode files to executables and
+;; html pages.
+
+;;; Code:
+
+;; Org mode and melpa repos
+(when (getenv "CI_PROJECT_ID")
+  (require 'package)
+  (package-initialize)
+  (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t)
+  (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+  (package-refresh-contents)
+  (package-install 'org-plus-contrib)
+  (package-install 'htmlize)
+  (setq user-full-name nil))
+
+;; org mode
+(require 'org)
 (require 'ox-publish)
 (require 'ox-man)
-(dolist (pub-dir '("bin/" "share/man/" "lib/"))
-  (mkdir (format "pss/%s" pub-dir) t))
-(mkdir "docs/" t)
+
 (defun org-man-publish-to-man (plist filename pub-dir)
   "Publish an org file to MAN-PAGE.
 
@@ -46,7 +66,25 @@ Return output file name."
              :recursive t
              :publishing-function 'org-publish-attachment)
        (list "org" :components
-             '("org-notes" "org-static" "org-man"))))
-(org-publish "org" t)
-(dolist (litorg (directory-files "." nil ".org"))
-  (org-babel-tangle-file (format "%s" litorg)))
+             '("org-notes" "org-static"))))
+
+(defun tangle-pss ()
+  (dolist (pub-dir '("bin/" "share/man/" "lib/" "config/"))
+    (mkdir (format "pss/%s" pub-dir) t))
+  (dolist (litorg (directory-files "." nil ".org"))
+    (org-babel-tangle-file (format "%s" litorg)))
+  (org-publish "org-man" t))
+
+(defun export-pss ()
+  (mkdir "docs/" t)
+  (org-publish "org" t))
+
+(unless (getenv "CI_PROJECT_ID")
+  (tangle-pss)
+  (export-pss)
+  )
+
+(provide 'publish)
+
+;;; publish.el ends here
+

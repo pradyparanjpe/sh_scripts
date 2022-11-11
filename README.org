@@ -21,7 +21,7 @@ Useful (according to me) shell-scripts
 - Place it at a location, ~LOC~.
   - ~LOC~ may be something of the form =~/Downloads/pss/= use the correct location.
 - Place the following code at the end of either =~/.zshrc= or =~/.bashrc= or both; replace =LOC= appropriately.
-#+begin_src sh :tangle no :exports none
+#+begin_src sh :tangle no :exports code
   PATH="${PATH}:LOC/bin"
 #+end_src
 
@@ -53,16 +53,22 @@ prady_sh_scripts - useful shell scripts written by Pradyumna Paranjape.
 * Configuration
   Variable values may be set manually in
   =${XDG_CONFIG_HOME:-${HOME/.config}}/sh_scripts/config.sh=.
-  A variable named =<var>= for as script =<script>= can be set by
+  A variable named =<var>= for a script =<script>= can be set by
   declaring =<script>_<var>=<value>=.
   It will be interpreted as =<var>=<value>= only by *that* script,
   ignoring all other variables.
 
 ** Example
+- Illustration
   #+begin_src sh :tangle no
     # shellcheck disable=SC2034
     countdown_progress=true
+
+    # interpreted and used only by 'countdown' as
+    # shellcheck disable=SC2034
+    progress=true
   #+end_src
+- Sample configuration aid <script> may be located at =LOC/config/<script>=.
 
 ** List of variables
   Following variables may be set for the corresponding script.
@@ -73,6 +79,11 @@ prady_sh_scripts - useful shell scripts written by Pradyumna Paranjape.
 
 *** [[file:clear_cache.org][clear_cache]]
    - clear_cache_confirmed: /bool/
+
+*** [[file:cmdlist.org][cmdlist]]
+   - cmdlist_all_cmds: List[str]
+   - cmdlist_<custom_variable>: str
+   - cmdlist_execute: bool
 
 *** [[file:countdown.org][countdown]]
    - countdown_colors: /bool/

@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2022-09-08 Thu 23:36 -->
+<!-- 2022-11-12 Sat 10:45 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>launch_py</title>
@@ -23,38 +23,38 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org34b1b66">NAME</a></li>
-<li><a href="#orgc410cba">SYNOPSIS</a></li>
-<li><a href="#orgae783fe">DESCRIPTION</a>
+<li><a href="#orgc2a8d7e">NAME</a></li>
+<li><a href="#org9295acb">SYNOPSIS</a></li>
+<li><a href="#org0f871e5">DESCRIPTION</a>
 <ul>
-<li><a href="#org64bbc5f">Optional Arguments:</a></li>
-<li><a href="#orgeae512e">Positional Arguments:</a></li>
-<li><a href="#org97fa8cd">Module format:</a></li>
+<li><a href="#org1f18c7e">Optional Arguments:</a></li>
+<li><a href="#org6923eb1">Positional Arguments:</a></li>
+<li><a href="#org37ecb70">Module format:</a></li>
 </ul>
 </li>
-<li><a href="#orga2d8288">ENVIRONMENT</a>
+<li><a href="#orgd567e88">ENVIRONMENT</a>
 <ul>
-<li><a href="#org1e4a48b">PYTHONSTARTUP</a></li>
+<li><a href="#org276a8e2">PYTHONSTARTUP</a></li>
 </ul>
 </li>
-<li><a href="#org7cc750c">FILES</a></li>
-<li><a href="#org2b11f75">SEE ALSO</a></li>
+<li><a href="#orge295245">FILES</a></li>
+<li><a href="#orgcce7f12">SEE ALSO</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org34b1b66" class="outline-2">
-<h2 id="org34b1b66">NAME</h2>
-<div class="outline-text-2" id="text-org34b1b66">
+<div id="outline-container-orgc2a8d7e" class="outline-2">
+<h2 id="orgc2a8d7e">NAME</h2>
+<div class="outline-text-2" id="text-orgc2a8d7e">
 <p>
 launch_py - launch (i)python with modules pre-imported
 </p>
 </div>
 </div>
 
-<div id="outline-container-orgc410cba" class="outline-2">
-<h2 id="orgc410cba">SYNOPSIS</h2>
-<div class="outline-text-2" id="text-orgc410cba">
+<div id="outline-container-org9295acb" class="outline-2">
+<h2 id="org9295acb">SYNOPSIS</h2>
+<div class="outline-text-2" id="text-org9295acb">
 <p>
 launch_py -h
 </p>
@@ -69,9 +69,9 @@ launch_py [[module] &#x2026;]
 </div>
 </div>
 
-<div id="outline-container-orgae783fe" class="outline-2">
-<h2 id="orgae783fe">DESCRIPTION</h2>
-<div class="outline-text-2" id="text-orgae783fe">
+<div id="outline-container-org0f871e5" class="outline-2">
+<h2 id="org0f871e5">DESCRIPTION</h2>
+<div class="outline-text-2" id="text-org0f871e5">
 <p>
 Launch python interpreter (ipython if available) with
 some modules already imported. This is a callable wrapper that launches
@@ -81,9 +81,9 @@ exemplified by <b>numpy</b>  and <b>pandas</b> scripts that call the wrapped fun
 </p>
 </div>
 
-<div id="outline-container-org64bbc5f" class="outline-3">
-<h3 id="org64bbc5f">Optional Arguments:</h3>
-<div class="outline-text-3" id="text-org64bbc5f">
+<div id="outline-container-org1f18c7e" class="outline-3">
+<h3 id="org1f18c7e">Optional Arguments:</h3>
+<div class="outline-text-3" id="text-org1f18c7e">
 <p>
 -h			Print command usage guide and exit
 </p>
@@ -94,26 +94,26 @@ exemplified by <b>numpy</b>  and <b>pandas</b> scripts that call the wrapped fun
 </div>
 </div>
 
-<div id="outline-container-orgeae512e" class="outline-3">
-<h3 id="orgeae512e">Positional Arguments:</h3>
-<div class="outline-text-3" id="text-orgeae512e">
+<div id="outline-container-org6923eb1" class="outline-3">
+<h3 id="org6923eb1">Positional Arguments:</h3>
+<div class="outline-text-3" id="text-org6923eb1">
 <p>
 module		Module(s) to import [format: see below]
 </p>
 </div>
 </div>
 
-<div id="outline-container-org97fa8cd" class="outline-3">
-<h3 id="org97fa8cd">Module format:</h3>
-<div class="outline-text-3" id="text-org97fa8cd">
+<div id="outline-container-org37ecb70" class="outline-3">
+<h3 id="org37ecb70">Module format:</h3>
+<div class="outline-text-3" id="text-org37ecb70">
 <p>
 [Package.][[subpackage.]&#x2026;]namespace[/object][:asvar]
 </p>
 </div>
 
-<div id="outline-container-org0a5063a" class="outline-4">
-<h4 id="org0a5063a">Examples:</h4>
-<div class="outline-text-4" id="text-org0a5063a">
+<div id="outline-container-org3417561" class="outline-4">
+<h4 id="org3417561">Examples:</h4>
+<div class="outline-text-4" id="text-org3417561">
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
 
@@ -175,13 +175,13 @@ module		Module(s) to import [format: see below]
 </div>
 </div>
 
-<div id="outline-container-orga2d8288" class="outline-2">
-<h2 id="orga2d8288">ENVIRONMENT</h2>
-<div class="outline-text-2" id="text-orga2d8288">
+<div id="outline-container-orgd567e88" class="outline-2">
+<h2 id="orgd567e88">ENVIRONMENT</h2>
+<div class="outline-text-2" id="text-orgd567e88">
 </div>
-<div id="outline-container-org1e4a48b" class="outline-3">
-<h3 id="org1e4a48b">PYTHONSTARTUP</h3>
-<div class="outline-text-3" id="text-org1e4a48b">
+<div id="outline-container-org276a8e2" class="outline-3">
+<h3 id="org276a8e2">PYTHONSTARTUP</h3>
+<div class="outline-text-3" id="text-org276a8e2">
 <p>
 The value (file-path) of <b>PYTHONSTARTUP</b>, if set, is preserved and set to
 a temporary file with additional import statements before
@@ -192,9 +192,9 @@ the preserved value is reset.
 </div>
 </div>
 
-<div id="outline-container-org7cc750c" class="outline-2">
-<h2 id="org7cc750c">FILES</h2>
-<div class="outline-text-2" id="text-org7cc750c">
+<div id="outline-container-orge295245" class="outline-2">
+<h2 id="orge295245">FILES</h2>
+<div class="outline-text-2" id="text-orge295245">
 <p>
 A temporary file is used as <b>PYTHONSTARTUP</b>. If is removed after
 the interpreter exits.
@@ -202,9 +202,9 @@ the interpreter exits.
 </div>
 </div>
 
-<div id="outline-container-org2b11f75" class="outline-2">
-<h2 id="org2b11f75">SEE ALSO</h2>
-<div class="outline-text-2" id="text-org2b11f75">
+<div id="outline-container-orgcce7f12" class="outline-2">
+<h2 id="orgcce7f12">SEE ALSO</h2>
+<div class="outline-text-2" id="text-orgcce7f12">
 <ul class="org-ul">
 <li>numpy</li>
 <li>pandas</li>

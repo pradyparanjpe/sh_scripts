@@ -13,11 +13,11 @@
 cmdlist - Display commands necessary to execute regular updates.
 
 * SYNOPSIS
-cmdlist.sh -h
+cmdlist -h
 
-cmdlist.sh --help
+cmdlist --help
 
-cmdlist.sh [-e|--execute]
+cmdlist [-e|--execute]
 
 * DESCRIPTION
 Display commands necessary to execute regular updates.
@@ -31,9 +31,27 @@ Optionally, execute them sequentially.
 
 -e|--execute        Execute all commands sequentially
 
-#+begin_warn
-Execution *shall* fail in most cases.
-#+end_warn
+#+begin_warning
+Execution *shall* fail if '$'s before variables are not appropriately skipped in expressions.
+
+See [[*arbitrary_named_var:][arbitrary_named_var]]
+#+end_warning
+
+* VARIABLES
+** all_cmds:
+List (string) of reference to all variables, whose values shall be displayed.
+Separator: ' '
+
+** arbitrary_named_var:
+Arbitrary expression stored and referred to in ~all_cmds~.
+Variable references in expressions should be suitably skipped
+to defer evaluation at runtime.
+
+*** EXAMPLE:
+#+begin_src sh :shebang $!/usr/bin/env sh :tangle pss/config/cmdlist :exports code
+  # THIS IS ILL-DISPLAYED IN MANPAGE
+  cmdlist_dnf_cmd="sudo su -l -c \"all_proxy=\${all_proxy} dnf --refresh -y update\""
+#+end_src
 
 #+begin_src sh :shebang #!/usr/bin/env sh
   # -*- coding:utf-8; mode: shell-script -*-
@@ -66,42 +84,10 @@ Execution *shall* fail in most cases.
       denial="
       THIS *DOES* NOTHING.
 
-      [WITH CAUTION]: All commands can be sequentially executed. This WILL fail.
+      [WITH CAUTION]:
+      All commands can be sequentially executed. This WILL generally fail.
 
-      This script only lists commands necessary to be run to updates. Fc36."
-
-      # shellcheck disable=SC2034
-      dnf_cmd="sudo su -l -c \"dnf --refresh -y update\""
-
-      # shellcheck disable=SC2034
-      clamav_cmd="sudo su -l -c \"all_proxy=\${all_proxy} freshclam\""
-
-      # shellcheck disable=SC2034
-      pip_cmd="pip install -U pip setuptools build wheel"
-
-      # shellcheck disable=SC2034
-      cargo_cmd="cargo-install-update install-update --all && cargo-cache -a"
-
-      # shellcheck disable=SC2034
-      tldr_cmd="tldr -u"
-
-      # shellcheck disable=SC2034
-      spacemacs_cmd="git -C \"\${XDG_DATA_HOME:-\${HOME}/.local/share}\
-  /pspman/src/spacemacs/\" pull"
-      # use pspman rather (when fixed)
-
-      # shellcheck disable=SC2034
-      nvim_cmd="nvim +CocUpdateSync +PlugUpdate +qall"
-
-      # shellcheck disable=SC2034
-      emacs_cmd="emacs \
-  --batch \
-  -l \"\${XDG_CONFIG_HOME:-\${HOME}/.config}/emacs/init.el\" \
-  --eval=\"(dotspacemacs/user-config)\" \
-  --eval=\"(prady/cmd-update)\""
-
-      all_cmds="dnf_cmd clamav_cmd pip_cmd cargo_cmd tldr_cmd spacemacs_cmd \
-          nvim_cmd emacs_cmd emacs_cmd"
+      This script only lists commands necessary to be run to updates."
   }
 
   set_vars () {
@@ -123,6 +109,7 @@ Execution *shall* fail in most cases.
 
       "
       execute=false
+      all_cmds=
       set_cmds
       load_default_config || true
   }

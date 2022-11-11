@@ -1,21 +1,63 @@
-image: alpine
+image: iquiw/alpine-emacs
+
+stages:
+- docs
+- build
+- prepare_release
+- release
+
+variables:
+  PACKAGE_VERSION: 0.0.1
+  PACKAGE_REGISTRY_URL: "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/sh_scripts/${PACKAGE_VERSION}"
 
 build:
   stage: build
   script:
-  - echo "Building..."
-  - cl publish.el
+  - echo "Tangling..."
+  - emacs --batch --no-init-file --load publish.el --funcall tangle-pss
+  rules:
+  - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
   artifacts:
-    path:
-    - docs
+    paths:
     - pss
 
 pages:
-  after: generate
-  stage: deploy
+  stage: build
+  script:
+  - echo "Exporting..."
+  - emacs --batch --no-init-file --load publish.el --funcall export-pss
+  - cp -r docs/ public/
   artifacts:
-    path:
+    paths:
     - docs
-    - pss
-    rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  rules:
+  - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+prepare_job:
+  stage: prepare_release
+  image: curlimages/curl:latest
+  needs:
+  - job: build
+  rules:
+  - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  script:
+  - >
+      curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file pss/ ${PACKAGE_REGISTRY_URL}/pss
+
+release_job:
+  stage: release
+  image: registry.gitlab.com/gitlab-org/release-cli:latest
+  needs:
+  - job: prepare_job
+    artifacts: true
+  script:
+  - echo "running release_job for $PACKAGE_VERSION"
+  release:
+    name: 'Release $PACKAGE_VERSION'
+    description: 'CHANGELOG.md'
+    tag_name: '$PACKAGE_VERSION'
+    ref: '$CI_COMMIT_SHA'
+    assets:
+      links:
+      - name: 'Shell scripts'
+        url: '$PACKAGE_REGISTRY_URL/pss'
